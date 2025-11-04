@@ -2,3 +2,5 @@
 *.pdf
 *.xml
 .idea
+*.txt
+*~
