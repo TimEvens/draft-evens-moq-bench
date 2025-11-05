@@ -34,6 +34,10 @@ author:
     name: Tomas Rigaux
     organization: Cisco
     email: trigaux@cisco.com
+  -
+    ins: S. Henning
+    name: Scott Henning
+    email: scotthenning00@gmail.com
 
 contributor:
 #- name: First Last
