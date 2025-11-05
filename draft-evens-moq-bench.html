@@ -8,10 +8,7 @@
 <meta content="Tim Evens" name="author">
 <meta content="Tomas Rigaux" name="author">
 <meta content="
-       This document defines a methodology to benchmark   relays by utilizing
-configuration profiles to perform a series of tests to evaluate the performance
-of relays. Completed test results provide benchmark information that can be used
-for comparison and analysis of   relays. 
+       This document defines a comprehensive methodology for benchmarking Media over QUIC Transport ( ) relays to evaluate their performance under realistic conditions. The methodology utilizes configurable test profiles that simulate common media streaming scenarios including audio-only distribution, combined audio-video streaming, and multi-participant conferencing environments. The framework defines standardized message formats, synchronization mechanisms, and comprehensive metrics collection to ensure reproducible and comparable results across different relay implementations. Test scenarios cover both   datagram and stream forwarding modes, enabling evaluation of relay performance characteristics such as throughput, latency variance, object loss rates, and resource utilization. The resulting benchmark data facilitates objective comparison and analysis of   relay implementations, supporting informed deployment decisions and performance optimization efforts. 
     " name="description">
 <meta content="xml2rfc 3.31.0" name="generator">
 <meta content="media over quic" name="keyword">
@@ -1086,10 +1083,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <h1 id="title">Media over QUIC Relay Benchmark Methodology</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">This document defines a methodology to benchmark <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> relays by utilizing
-configuration profiles to perform a series of tests to evaluate the performance
-of relays. Completed test results provide benchmark information that can be used
-for comparison and analysis of <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> relays.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">This document defines a comprehensive methodology for benchmarking Media over QUIC Transport (<span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span>) relays to evaluate their performance under realistic conditions. The methodology utilizes configurable test profiles that simulate common media streaming scenarios including audio-only distribution, combined audio-video streaming, and multi-participant conferencing environments. The framework defines standardized message formats, synchronization mechanisms, and comprehensive metrics collection to ensure reproducible and comparable results across different relay implementations. Test scenarios cover both <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span> datagram and stream forwarding modes, enabling evaluation of relay performance characteristics such as throughput, latency variance, object loss rates, and resource utilization. The resulting benchmark data facilitates objective comparison and analysis of <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> relay implementations, supporting informed deployment decisions and performance optimization efforts.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1239,6 +1233,23 @@ for comparison and analysis of <span>[<a href="#MOQT" class="cite xref">MOQT</a>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
             <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1">
+                <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-test-environment-isolation" class="internal xref">Test Environment Isolation</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2">
+                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="auto internal xref">6.2</a>.  <a href="#name-authentication-and-authoriz" class="internal xref">Authentication and Authorization</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.3">
+                <p id="section-toc.1-1.6.2.3.1"><a href="#section-6.3" class="auto internal xref">6.3</a>.  <a href="#name-resource-management" class="internal xref">Resource Management</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.4">
+                <p id="section-toc.1-1.6.2.4.1"><a href="#section-6.4" class="auto internal xref">6.4</a>.  <a href="#name-data-privacy" class="internal xref">Data Privacy</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.5">
+                <p id="section-toc.1-1.6.2.5.1"><a href="#section-6.5" class="auto internal xref">6.5</a>.  <a href="#name-implementation-security" class="internal xref">Implementation Security</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
             <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
@@ -1283,7 +1294,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <span class="break"></span><dl class="dlParallel" id="section-2-3">
         <dt id="section-2-3.1">Track Configurations:</dt>
         <dd style="margin-left: 1.5em" id="section-2-3.2">
-          <p id="section-2-3.2.1">Track configurations define<a href="#section-2-3.2.1" class="pilcrow">¶</a></p>
+          <p id="section-2-3.2.1">Track configurations define the parameters and settings for individual media tracks used in benchmarking, including transmission patterns, object sizes, intervals, and delivery modes.<a href="#section-2-3.2.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 <dt id="section-2-3.3">Config Profile:</dt>
@@ -1296,6 +1307,51 @@ of relays.<a href="#section-2-3.4.1" class="pilcrow">¶</a></p>
         <dd style="margin-left: 1.5em" id="section-2-3.6">
           <p id="section-2-3.6.1">A test scenario is a set of config profiles that are used to perform a series of tests to evaluate the performance
 of relays.<a href="#section-2-3.6.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-3.7">Relay:</dt>
+        <dd style="margin-left: 1.5em" id="section-2-3.8">
+          <p id="section-2-3.8.1">A <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> relay is an intermediary that receives published media objects from publishers and forwards them to subscribers, providing fan-out distribution capabilities.<a href="#section-2-3.8.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-3.9">Publisher:</dt>
+        <dd style="margin-left: 1.5em" id="section-2-3.10">
+          <p id="section-2-3.10.1">An entity that produces and sends media objects to a <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> relay for distribution to subscribers.<a href="#section-2-3.10.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-3.11">Subscriber:</dt>
+        <dd style="margin-left: 1.5em" id="section-2-3.12">
+          <p id="section-2-3.12.1">An entity that receives media objects from a <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> relay by subscribing to specific tracks.<a href="#section-2-3.12.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-3.13">Track:</dt>
+        <dd style="margin-left: 1.5em" id="section-2-3.14">
+          <p id="section-2-3.14.1">A sequence of related media objects identified by a namespace and track name, representing a single media stream such as audio or video.<a href="#section-2-3.14.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-3.15">Group:</dt>
+        <dd style="margin-left: 1.5em" id="section-2-3.16">
+          <p id="section-2-3.16.1">A collection of related objects within a track that have dependencies on each other, typically used for video frames where objects within a group are interdependent.<a href="#section-2-3.16.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-3.17">Object:</dt>
+        <dd style="margin-left: 1.5em" id="section-2-3.18">
+          <p id="section-2-3.18.1">An individual unit of media data transmitted within a track, such as an audio sample or video frame.<a href="#section-2-3.18.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-3.19">Namespace:</dt>
+        <dd style="margin-left: 1.5em" id="section-2-3.20">
+          <p id="section-2-3.20.1">A hierarchical identifier that groups related tracks together, allowing for organized distribution of media content.<a href="#section-2-3.20.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-3.21">Datagrams:</dt>
+        <dd style="margin-left: 1.5em" id="section-2-3.22">
+          <p id="section-2-3.22.1"><span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span> datagram frames used for unreliable, low-latency transmission of small media objects, typically audio.<a href="#section-2-3.22.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-3.23">Streams:</dt>
+        <dd style="margin-left: 1.5em" id="section-2-3.24">
+          <p id="section-2-3.24.1"><span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span> streams used for reliable, ordered transmission of media objects, typically video or larger content.<a href="#section-2-3.24.1" class="pilcrow">¶</a></p>
 </dd>
       <dd class="break"></dd>
 </dl>
@@ -1326,7 +1382,7 @@ defined in <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> using datag
 <a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-audio-media" class="section-name selfRef">Audio Media</a>
         </h3>
 <p id="section-3.2-1">Audio media is a common <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> use case. An audio media track typically maintains fixed intervals with similarly sized data objects. Like video, transmission occurs at each interval, producing a periodic fan‑out burst. Each data object usually carries fewer than three extension headers.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.2-2"><span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> does not define how to handle larger than MTU sized data objects for <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span> datagarms.  Audio does not
+<p id="section-3.2-2"><span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> does not define how to handle larger than MTU sized data objects for <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span> datagrams.  Audio does not
 have the same requirement as video where subsequent data objects are related to the previous object or group.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
 <p id="section-3.2-3">Audio is a prime candidate for datagram considering the size of the data objects are less than MTU and
 there is no dependency on previous object within a group.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
@@ -1725,10 +1781,10 @@ to define how long published objects should remain in the transmit queue.<a href
 <a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-synchronize-start-of-benchm" class="section-name selfRef">Synchronize Start of Benchmark</a>
         </h3>
 <p id="section-5.2-1">Synchronization of the benchmark is required to ensure that all clients start at the same time as the publisher so that objects published can be compared to objects received.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
-<p id="section-5.2-2">To synchronize the start of the benchmark, the publisher will publish a <a href="#start-message" class="auto internal xref">Figure 1</a> repeatedly for the duration of <code>Start Delay</code> value in milliseconds. The <a href="#start-message" class="auto internal xref">Figure 1</a> will be published every every 1/10th interval of the <code>Start Delay</code> value in milliseconds. If 1/10th is less than 100ms, the <a href="#start-message" class="auto internal xref">Figure 1</a> will be published every 100ms.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
-<p id="section-5.2-3">Clients will subscribe to the published track and will wait for the <a href="#start-message" class="auto internal xref">Figure 1</a> to be received. If the start message is not received before data messages or completion message,
+<p id="section-5.2-2">To synchronize the start of the benchmark, the publisher will publish a start message (<a href="#start-message" class="auto internal xref">Section 5.4.1</a>) repeatedly for the duration of <code>Start Delay</code> value in milliseconds. The start message will be published every every 1/10th interval of the <code>Start Delay</code> value in milliseconds. If 1/10th is less than 100ms, the start message will be published every 100ms.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
+<p id="section-5.2-3">Clients will subscribe to the published track and will wait for the start message (<a href="#start-message" class="auto internal xref">Section 5.4.1</a>) to be received. If the start message is not received before data messages or completion message,
 the track benchmark is considered failed.<a href="#section-5.2-3" class="pilcrow">¶</a></p>
-<p id="section-5.2-4">Clients will ignore the repeated <a href="#start-message" class="auto internal xref">Figure 1</a> after receiving the first one. The test begins on the first <a href="#data-message" class="auto internal xref">Figure 2</a> message received. <a href="#start-message" class="auto internal xref">Figure 1</a> <span class="bcp14">MUST</span> not be sent after sending the first <a href="#data-message" class="auto internal xref">Figure 2</a> message.<a href="#section-5.2-4" class="pilcrow">¶</a></p>
+<p id="section-5.2-4">Clients will ignore the repeated start messages after receiving the first one. The test begins on the first data message (<a href="#data-message" class="auto internal xref">Section 5.4.2</a>) received. Start message <span class="bcp14">MUST</span> not be sent after sending the first data message message.<a href="#section-5.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="completion-of-benchmark">
@@ -1736,7 +1792,7 @@ the track benchmark is considered failed.<a href="#section-5.2-3" class="pilcrow
         <h3 id="name-completion-of-benchmark">
 <a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-completion-of-benchmark" class="section-name selfRef">Completion of benchmark</a>
         </h3>
-<p id="section-5.3-1">The per track benchmark is completed when the publisher sends a <a href="#completion-message" class="auto internal xref">Figure 3</a>. The <a href="#completion-message" class="auto internal xref">Figure 3</a> will be sent after the last <a href="#data-message" class="auto internal xref">Figure 2</a> message is sent.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
+<p id="section-5.3-1">The per track benchmark is completed when the publisher sends a completion message (<a href="#completion-message" class="auto internal xref">Section 5.4.3</a>). The completion message will be sent after the last data message (<a href="#data-message" class="auto internal xref">Section 5.4.2</a>) message is sent.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="messages">
@@ -1746,52 +1802,40 @@ the track benchmark is considered failed.<a href="#section-5.2-3" class="pilcrow
         </h3>
 <p id="section-5.4-1">Testing utilizes various messages to start testing, send data, and report metrics on completion.<a href="#section-5.4-1" class="pilcrow">¶</a></p>
 <p id="section-5.4-2">The following messages are defined:<a href="#section-5.4-2" class="pilcrow">¶</a></p>
-<div id="start">
+<div id="start-message">
 <section id="section-5.4.1">
           <h4 id="name-start">
 <a href="#section-5.4.1" class="section-number selfRef">5.4.1. </a><a href="#name-start" class="section-name selfRef">START</a>
           </h4>
-<span id="name-start-test-message"></span><div id="start-message">
-<figure id="figure-1">
-            <div class="alignLeft art-text artwork" id="section-5.4.1-1.1">
+<div class="alignLeft art-text artwork" id="section-5.4.1-1">
 <pre>
 START Message {
-  type (8) = 0x01,
+  type (uint8) = 0x01,
   objects_per_group (uint32),
   first_object_size (uint32),
   remaining_object_size (uint32),
   interval (uint32),
 }
-</pre>
-</div>
-<figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
-<a href="#name-start-test-message" class="selfRef">Start Test Message</a>
-            </figcaption></figure>
+</pre><a href="#section-5.4.1-1" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
-<div id="data">
+<div id="data-message">
 <section id="section-5.4.2">
           <h4 id="name-data">
 <a href="#section-5.4.2" class="section-number selfRef">5.4.2. </a><a href="#name-data" class="section-name selfRef">DATA</a>
           </h4>
-<span id="name-data-message"></span><div id="data-message">
-<figure id="figure-2">
-            <div class="alignLeft art-text artwork" id="section-5.4.2-1.1">
+<div class="alignLeft art-text artwork" id="section-5.4.2-1">
 <pre>
 DATA Message {
-  type (8) = 0x02,
+  type (uint8) = 0x02,
   group_number (uint64),
   object_number (uint64),
   milliseconds_since_first_object (uint32_t),
   data_length (uint32),
   data (bytes),
 }
-</pre>
-</div>
-<figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
-<a href="#name-data-message" class="selfRef">Data Message</a>
-            </figcaption></figure>
+</pre><a href="#section-5.4.2-1" class="pilcrow">¶</a>
 </div>
 <span class="break"></span><dl class="dlParallel" id="section-5.4.2-2">
             <dt id="section-5.4.2-2.1">milliseconds_since_first_object:</dt>
@@ -1803,26 +1847,20 @@ sends the message. If there are publisher delays, then this time would reflect t
 </dl>
 </section>
 </div>
-<div id="completion">
+<div id="completion-message">
 <section id="section-5.4.3">
           <h4 id="name-completion">
 <a href="#section-5.4.3" class="section-number selfRef">5.4.3. </a><a href="#name-completion" class="section-name selfRef">COMPLETION</a>
           </h4>
-<span id="name-completion-message"></span><div id="completion-message">
-<figure id="figure-3">
-            <div class="alignLeft art-text artwork" id="section-5.4.3-1.1">
+<div class="alignLeft art-text artwork" id="section-5.4.3-1">
 <pre>
 COMPLETION Message {
-  type (8) = 0x03,
+  type (uint8) = 0x03,
   objects_sent (uint64),
   groups_sent (uint64),
   total_duration (uint32),
 }
-</pre>
-</div>
-<figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
-<a href="#name-completion-message" class="selfRef">Completion Message</a>
-            </figcaption></figure>
+</pre><a href="#section-5.4.3-1" class="pilcrow">¶</a>
 </div>
 <span class="break"></span><dl class="dlParallel" id="section-5.4.3-2">
             <dt id="section-5.4.3-2.1">total_duration:</dt>
@@ -1948,7 +1986,7 @@ COMPLETION Message {
               </tr>
               <tr>
                 <td class="text-left" rowspan="1" colspan="1">Expected Bits Per Second</td>
-                <td class="text-left" rowspan="1" colspan="1">Computed bits per second rate based on <a href="#start-message" class="auto internal xref">Figure 1</a> first, remaining sizes and interval values</td>
+                <td class="text-left" rowspan="1" colspan="1">Computed bits per second rate based on <a href="#start-message" class="auto internal xref">Section 5.4.1</a> first, remaining sizes and interval values</td>
               </tr>
             </tbody>
           </table>
@@ -1973,7 +2011,91 @@ to avoid multi-publisher and mirroring where the publisher subscribes to itself.
       <h2 id="name-security-considerations">
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-6-1">TODO: Expand this section<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-1">This document defines a benchmarking methodology and does not introduce new security vulnerabilities beyond those inherent in <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> and <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span>. However, the following security considerations apply when implementing and running benchmarks:<a href="#section-6-1" class="pilcrow">¶</a></p>
+<div id="test-environment-isolation">
+<section id="section-6.1">
+        <h3 id="name-test-environment-isolation">
+<a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-test-environment-isolation" class="section-name selfRef">Test Environment Isolation</a>
+        </h3>
+<p id="section-6.1-1">Benchmarking should be conducted in isolated test environments to prevent:<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-6.1-2.1">
+            <p id="section-6.1-2.1.1">Interference with production traffic<a href="#section-6.1-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-6.1-2.2">
+            <p id="section-6.1-2.2.1">Exposure of test data patterns to unauthorized parties<a href="#section-6.1-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-6.1-2.3">
+            <p id="section-6.1-2.3.1">Resource exhaustion attacks on production systems<a href="#section-6.1-2.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+<div id="authentication-and-authorization">
+<section id="section-6.2">
+        <h3 id="name-authentication-and-authoriz">
+<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-authentication-and-authoriz" class="section-name selfRef">Authentication and Authorization</a>
+        </h3>
+<p id="section-6.2-1">Benchmark implementations <span class="bcp14">SHOULD</span> implement proper authentication and authorization mechanisms to:<a href="#section-6.2-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-6.2-2.1">
+            <p id="section-6.2-2.1.1">Prevent unauthorized participation in benchmark tests<a href="#section-6.2-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-6.2-2.2">
+            <p id="section-6.2-2.2.1">Ensure only authorized entities can initiate benchmark sessions<a href="#section-6.2-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-6.2-2.3">
+            <p id="section-6.2-2.3.1">Protect against malicious clients that could skew results<a href="#section-6.2-2.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+<div id="resource-management">
+<section id="section-6.3">
+        <h3 id="name-resource-management">
+<a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-resource-management" class="section-name selfRef">Resource Management</a>
+        </h3>
+<p id="section-6.3-1">Benchmark implementations <span class="bcp14">MUST</span> include safeguards to prevent:<a href="#section-6.3-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-6.3-2.1">
+            <p id="section-6.3-2.1.1">Excessive resource consumption that could lead to denial of service<a href="#section-6.3-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-6.3-2.2">
+            <p id="section-6.3-2.2.1">Memory exhaustion from unbounded metric collection<a href="#section-6.3-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-6.3-2.3">
+            <p id="section-6.3-2.3.1">CPU exhaustion from processing malformed benchmark messages<a href="#section-6.3-2.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+<div id="data-privacy">
+<section id="section-6.4">
+        <h3 id="name-data-privacy">
+<a href="#section-6.4" class="section-number selfRef">6.4. </a><a href="#name-data-privacy" class="section-name selfRef">Data Privacy</a>
+        </h3>
+<p id="section-6.4-1">While benchmark data is typically synthetic, implementations <span class="bcp14">SHOULD</span>:<a href="#section-6.4-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-6.4-2.1">
+            <p id="section-6.4-2.1.1">Avoid including sensitive information in test data<a href="#section-6.4-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-6.4-2.2">
+            <p id="section-6.4-2.2.1">Provide mechanisms to sanitize benchmark results before sharing<a href="#section-6.4-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-6.4-2.3">
+            <p id="section-6.4-2.3.1">Consider the privacy implications of detailed performance metrics<a href="#section-6.4-2.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+<div id="implementation-security">
+<section id="section-6.5">
+        <h3 id="name-implementation-security">
+<a href="#section-6.5" class="section-number selfRef">6.5. </a><a href="#name-implementation-security" class="section-name selfRef">Implementation Security</a>
+        </h3>
+<p id="section-6.5-1">Benchmark tools <span class="bcp14">MUST</span> follow secure coding practices and <span class="bcp14">SHOULD</span> undergo security review, as they may be deployed in sensitive network environments.<a href="#section-6.5-1" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="iana-considerations">
@@ -1981,7 +2103,22 @@ to avoid multi-publisher and mirroring where the publisher subscribes to itself.
       <h2 id="name-iana-considerations">
 <a href="#section-7" class="section-number selfRef">7. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-7-1">TODO: Expand this section<a href="#section-7-1" class="pilcrow">¶</a></p>
+<p id="section-7-1">This document does not require any IANA actions. The benchmarking methodology defined herein:<a href="#section-7-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-7-2.1">
+          <p id="section-7-2.1.1">Does not define new protocol elements that require IANA registration<a href="#section-7-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-7-2.2">
+          <p id="section-7-2.2.1">Does not create new registries or modify existing ones<a href="#section-7-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-7-2.3">
+          <p id="section-7-2.3.1">Uses existing <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> and <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span> protocol mechanisms without extension<a href="#section-7-2.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-7-2.4">
+          <p id="section-7-2.4.1">Defines message formats for benchmarking purposes only, which are not part of the <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> protocol specification<a href="#section-7-2.4.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-7-3">The message type values defined in this document (0x01, 0x02, 0x03) are used solely within the context of benchmarking implementations and do not conflict with or extend the <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> protocol message space.<a href="#section-7-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-combined-references">
