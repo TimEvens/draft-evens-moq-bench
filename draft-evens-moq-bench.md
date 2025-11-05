@@ -48,10 +48,7 @@ informative:
 
 --- abstract
 
-This document defines a methodology to benchmark {{MOQT}} relays by utilizing
-configuration profiles to perform a series of tests to evaluate the performance
-of relays. Completed test results provide benchmark information that can be used
-for comparison and analysis of {{MOQT}} relays.
+This document defines a comprehensive methodology for benchmarking Media over QUIC Transport ({{MOQT}}) relays to evaluate their performance under realistic conditions. The methodology utilizes configurable test profiles that simulate common media streaming scenarios including audio-only distribution, combined audio-video streaming, and multi-participant conferencing environments. The framework defines standardized message formats, synchronization mechanisms, and comprehensive metrics collection to ensure reproducible and comparable results across different relay implementations. Test scenarios cover both {{QUIC}} datagram and stream forwarding modes, enabling evaluation of relay performance characteristics such as throughput, latency variance, object loss rates, and resource utilization. The resulting benchmark data facilitates objective comparison and analysis of {{MOQT}} relay implementations, supporting informed deployment decisions and performance optimization efforts.
 
 --- middle
 
@@ -68,7 +65,7 @@ for comparison and analysis of {{MOQT}} relays.
 Commonly used terms in this document are described below.
 
 Track Configurations:
-: Track configurations define
+: Track configurations define the parameters and settings for individual media tracks used in benchmarking, including transmission patterns, object sizes, intervals, and delivery modes.
 
 
 Config Profile:
@@ -78,6 +75,33 @@ of relays.
 Test Scenario:
 : A test scenario is a set of config profiles that are used to perform a series of tests to evaluate the performance
 of relays.
+
+Relay:
+: A {{MOQT}} relay is an intermediary that receives published media objects from publishers and forwards them to subscribers, providing fan-out distribution capabilities.
+
+Publisher:
+: An entity that produces and sends media objects to a {{MOQT}} relay for distribution to subscribers.
+
+Subscriber:
+: An entity that receives media objects from a {{MOQT}} relay by subscribing to specific tracks.
+
+Track:
+: A sequence of related media objects identified by a namespace and track name, representing a single media stream such as audio or video.
+
+Group:
+: A collection of related objects within a track that have dependencies on each other, typically used for video frames where objects within a group are interdependent.
+
+Object:
+: An individual unit of media data transmitted within a track, such as an audio sample or video frame.
+
+Namespace:
+: A hierarchical identifier that groups related tracks together, allowing for organized distribution of media content.
+
+Datagrams:
+: {{QUIC}} datagram frames used for unreliable, low-latency transmission of small media objects, typically audio.
+
+Streams:
+: {{QUIC}} streams used for reliable, ordered transmission of media objects, typically video or larger content.
 
 # Data Patterns
 
@@ -98,7 +122,7 @@ defined in {{MOQT}} using datagram. Unless video is very low quality, video uses
 
 Audio media is a common {{MOQT}} use case. An audio media track typically maintains fixed intervals with similarly sized data objects. Like video, transmission occurs at each interval, producing a periodic fan‑out burst. Each data object usually carries fewer than three extension headers.
 
-{{MOQT}} does not define how to handle larger than MTU sized data objects for {{QUIC}} datagarms.  Audio does not
+{{MOQT}} does not define how to handle larger than MTU sized data objects for {{QUIC}} datagrams.  Audio does not
 have the same requirement as video where subsequent data objects are related to the previous object or group.
 
 Audio is a prime candidate for datagram considering the size of the data objects are less than MTU and
@@ -257,16 +281,16 @@ Objects and groups will continue for as long as the `Duration` value.
 
 Synchronization of the benchmark is required to ensure that all clients start at the same time as the publisher so that objects published can be compared to objects received.
 
-To synchronize the start of the benchmark, the publisher will publish a {{start-message}} repeatedly for the duration of `Start Delay` value in milliseconds. The {{start-message}} will be published every every 1/10th interval of the `Start Delay` value in milliseconds. If 1/10th is less than 100ms, the {{start-message}} will be published every 100ms.
+To synchronize the start of the benchmark, the publisher will publish a start message ({{start-message}}) repeatedly for the duration of `Start Delay` value in milliseconds. The start message will be published every every 1/10th interval of the `Start Delay` value in milliseconds. If 1/10th is less than 100ms, the start message will be published every 100ms.
 
-Clients will subscribe to the published track and will wait for the {{start-message}} to be received. If the start message is not received before data messages or completion message,
+Clients will subscribe to the published track and will wait for the start message ({{start-message}}) to be received. If the start message is not received before data messages or completion message,
 the track benchmark is considered failed.
 
-Clients will ignore the repeated {{start-message}} after receiving the first one. The test begins on the first {{data-message}} message received. {{start-message}} MUST not be sent after sending the first {{data-message}} message.
+Clients will ignore the repeated start messages after receiving the first one. The test begins on the first data message ({{data-message}}) received. Start message MUST not be sent after sending the first data message message.
 
 ## Completion of benchmark
 
-The per track benchmark is completed when the publisher sends a {{completion-message}}. The {{completion-message}} will be sent after the last {{data-message}} message is sent.
+The per track benchmark is completed when the publisher sends a completion message ({{completion-message}}). The completion message will be sent after the last data message ({{data-message}}) message is sent.
 
 ## Messages
 
@@ -274,24 +298,23 @@ Testing utilizes various messages to start testing, send data, and report metric
 
 The following messages are defined:
 
-### START
+### START {#start-message}
 
 ~~~
 START Message {
-  type (8) = 0x01,
+  type (uint8) = 0x01,
   objects_per_group (uint32),
   first_object_size (uint32),
   remaining_object_size (uint32),
   interval (uint32),
 }
 ~~~
-{: #start-message title="Start Test Message" }
 
-### DATA
+### DATA {#data-message}
 
 ~~~
 DATA Message {
-  type (8) = 0x02,
+  type (uint8) = 0x02,
   group_number (uint64),
   object_number (uint64),
   milliseconds_since_first_object (uint32_t),
@@ -299,24 +322,21 @@ DATA Message {
   data (bytes),
 }
 ~~~
-{: #data-message title="Data Message" }
 
 milliseconds_since_first_object:
 : Number of milliseconds since the first object was sent. The first object starts at zero and is incremented by milliseconds from the publisher for each message sent. The publisher adds the time when it
 sends the message. If there are publisher delays, then this time would reflect the delay variance from expected interval.
 
-### COMPLETION
+### COMPLETION {#completion-message}
 
 ~~~
 COMPLETION Message {
-  type (8) = 0x03,
+  type (uint8) = 0x03,
   objects_sent (uint64),
   groups_sent (uint64),
   total_duration (uint32),
 }
 ~~~
-{: #completion-message title="Completion Message" }
-
 
 total_duration:
 : Total duration is the total duration in milliseconds from first object to last object sent
@@ -367,7 +387,52 @@ to dynamically modify the configuration profile namespace and name based on the 
 to avoid multi-publisher and mirroring where the publisher subscribes to itself.
 
 # Security Considerations {#security}
-TODO: Expand this section
+
+This document defines a benchmarking methodology and does not introduce new security vulnerabilities beyond those inherent in {{MOQT}} and {{QUIC}}. However, the following security considerations apply when implementing and running benchmarks:
+
+## Test Environment Isolation
+
+Benchmarking should be conducted in isolated test environments to prevent:
+
+- Interference with production traffic
+- Exposure of test data patterns to unauthorized parties
+- Resource exhaustion attacks on production systems
+
+## Authentication and Authorization
+
+Benchmark implementations SHOULD implement proper authentication and authorization mechanisms to:
+
+- Prevent unauthorized participation in benchmark tests
+- Ensure only authorized entities can initiate benchmark sessions
+- Protect against malicious clients that could skew results
+
+## Resource Management
+
+Benchmark implementations MUST include safeguards to prevent:
+
+- Excessive resource consumption that could lead to denial of service
+- Memory exhaustion from unbounded metric collection
+- CPU exhaustion from processing malformed benchmark messages
+
+## Data Privacy
+
+While benchmark data is typically synthetic, implementations SHOULD:
+
+- Avoid including sensitive information in test data
+- Provide mechanisms to sanitize benchmark results before sharing
+- Consider the privacy implications of detailed performance metrics
+
+## Implementation Security
+
+Benchmark tools MUST follow secure coding practices and SHOULD undergo security review, as they may be deployed in sensitive network environments.
 
 # IANA Considerations
-TODO: Expand this section
+
+This document does not require any IANA actions. The benchmarking methodology defined herein:
+
+- Does not define new protocol elements that require IANA registration
+- Does not create new registries or modify existing ones
+- Uses existing {{MOQT}} and {{QUIC}} protocol mechanisms without extension
+- Defines message formats for benchmarking purposes only, which are not part of the {{MOQT}} protocol specification
+
+The message type values defined in this document (0x01, 0x02, 0x03) are used solely within the context of benchmarking implementations and do not conflict with or extend the {{MOQT}} protocol message space.
