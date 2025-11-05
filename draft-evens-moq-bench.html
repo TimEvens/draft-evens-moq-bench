@@ -7,6 +7,7 @@
 <title>Media over QUIC Relay Benchmark Methodology</title>
 <meta content="Tim Evens" name="author">
 <meta content="Tomas Rigaux" name="author">
+<meta content="Scott Henning" name="author">
 <meta content="
        This document defines a comprehensive methodology for benchmarking Media over QUIC Transport ( ) relays to evaluate their performance under realistic conditions. The methodology utilizes configurable test profiles that simulate common media streaming scenarios including audio-only distribution, combined audio-video streaming, and multi-participant conferencing environments. The framework defines standardized message formats, synchronization mechanisms, and comprehensive metrics collection to ensure reproducible and comparable results across different relay implementations. Test scenarios cover both   datagram and stream forwarding modes, enabling evaluation of relay performance characteristics such as throughput, latency variance, object loss rates, and resource utilization. The resulting benchmark data facilitates objective comparison and analysis of   relay implementations, supporting informed deployment decisions and performance optimization efforts. 
     " name="description">
@@ -1047,7 +1048,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <td class="right">November 2025</td>
 </tr></thead>
 <tfoot><tr>
-<td class="left">Evens &amp; Rigaux</td>
+<td class="left">Evens, et al.</td>
 <td class="center">Expires 9 May 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
@@ -1076,6 +1077,9 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <div class="author">
       <div class="author-name">T. Rigaux</div>
 <div class="org">Cisco</div>
+</div>
+<div class="author">
+      <div class="author-name">S. Henning</div>
 </div>
 </dd>
 </dl>
@@ -2181,6 +2185,13 @@ to avoid multi-publisher and mirroring where the publisher subscribes to itself.
 <div class="email">
 <span>Email:</span>
 <a href="mailto:trigaux@cisco.com" class="email">trigaux@cisco.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Scott Henning</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:scotthenning00@gmail.com" class="email">scotthenning00@gmail.com</a>
 </div>
 </address>
 </section>
