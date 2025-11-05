@@ -16,8 +16,8 @@ venue:
   type: "Working Group"
   mail: "moq@ietf.org"
   arch: "https://mailarchive.ietf.org/arch/browse/moq/"
-  github: "timevens/moq-relay-peering"
-  latest: "https://timevens.github.io/moq-relay-peering/draft-evens-moq-relay-peering.html"
+  github: "timevens/draft-evens-moq-bench"
+  latest: "https://timevens.github.io/draft-evens-moq-bench/draft-evens-moq-bench.html"
 
 stand_alone: yes
 smart_quotes: no
