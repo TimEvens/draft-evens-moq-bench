@@ -219,6 +219,7 @@ stream forwarding tracks.
 
 The above diagram shows a set of publishers and subscribers. Each client in this scenario publishes two tracks, audio and video, and subscribe to the other subscribers audio and video tracks.  In this scenario, the set of publishers and subscribers mimic a video conference meeting.  The benchmark is to see how many sets (aka meetings) can be supported by the relay using datagram and stream forwarding tracks.
 
+# Methodology
 
 ## Config Profile
 
