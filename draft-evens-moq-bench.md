@@ -229,7 +229,8 @@ A configuration profile consists of per track configuration settings. The follow
 |:-------|:--------------------------------------|
 | namespace | Namespace tuple of the track |
 | name | Name of the track |
-| mode | Mode is either `datagram` or `stream` |
+| reliable | True to use QUIC streams and false to use datagrams |
+| mode | Is a value of 1 to indicate publisher, 2 to indicate subscriber, or 3 to indicate both. When both, the track namespace or name will often be interpolated based on the test script |
 | priority | Priority of the track |
 | ttl | Time to live for objects published |
 | interval | Interval in milliseconds to send data objects |
@@ -256,16 +257,16 @@ Objects and groups will continue for as long as the `Duration` value.
 
 Synchronization of the benchmark is required to ensure that all clients start at the same time as the publisher so that objects published can be compared to objects received.
 
-To synchronize the start of the benchmark, the publisher will publish a `START` message repeatedly for the duration of `Start Delay` value in milliseconds. The `START` message will be published every every 1/10th interval of the `Start Delay` value in milliseconds.
+To synchronize the start of the benchmark, the publisher will publish a {{start-message}} repeatedly for the duration of `Start Delay` value in milliseconds. The {{start-message}} will be published every every 1/10th interval of the `Start Delay` value in milliseconds. If 1/10th is less than 100ms, the {{start-message}} will be published every 100ms.
 
-Clients will subscribe to the published track and will wait for the `START` message to be received. If the start message is not received before data messages or completion message,
+Clients will subscribe to the published track and will wait for the {{start-message}} to be received. If the start message is not received before data messages or completion message,
 the track benchmark is considered failed.
 
-Clients will ignore the repeated `START` messages after receiving the first one. The test begins on the first `DATA` message received. `START` MUST not be sent after sending the first `DATA` message.
+Clients will ignore the repeated {{start-message}} after receiving the first one. The test begins on the first {{data-message}} message received. {{start-message}} MUST not be sent after sending the first {{data-message}} message.
 
 ## Completion of benchmark
 
-The per track benchmark is completed when the publisher sends a `COMPLETION` message. The `COMPLETION` message will be sent after the last `DATA` message is sent.
+The per track benchmark is completed when the publisher sends a {{completion-message}}. The {{completion-message}} will be sent after the last {{data-message}} message is sent.
 
 ## Messages
 
@@ -291,14 +292,18 @@ START Message {
 ~~~
 DATA Message {
   type (8) = 0x02,
-  objects_per_group (uint32),
-  first_object_size (uint32),
-  remaining_object_size (uint32),
-  duration (uint32),
+  group_number (uint64),
+  object_number (uint64),
+  milliseconds_since_first_object (uint32_t),
+  data_length (uint32),
+  data (bytes),
 }
 ~~~
 {: #data-message title="Data Message" }
 
+milliseconds_since_first_object:
+: Number of milliseconds since the first object was sent. The first object starts at zero and is incremented by milliseconds from the publisher for each message sent. The publisher adds the time when it
+sends the message. If there are publisher delays, then this time would reflect the delay variance from expected interval.
 
 ### COMPLETION
 
@@ -307,16 +312,59 @@ COMPLETION Message {
   type (8) = 0x03,
   objects_sent (uint64),
   groups_sent (uint64),
-  duration (uint32),
+  total_duration (uint32),
 }
 ~~~
 {: #completion-message title="Completion Message" }
 
 
+total_duration:
+: Total duration is the total duration in milliseconds from first object to last object sent
+
+
+## Benchmark Metrics
+
+### While Track is in Progress
+
+The following metrics are computed ongoing as the track is in progress:
+
+| Metric                  | Notes                                                                                                                                                      |
+| :---------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Received Objects        | Count of received objects                                                                                                                                  |
+| Received Groups         | Count of received groups                                                                                                                                   |
+| Receive Delta           | Delta time in milliseconds from last message to current message received                                                                                   |
+| Average Delta           | Average delta time in milliseconds from last message to current message received                                                                           |
+| Max Delta               | Maximum delta time in milliseconds seen                                                                                                                    |
+| Publisher Variance      | Received milliseconds_since_first_object should be zero based on interval.  This metric tracks the variance of publisher sending delay                     |
+| Receive Variance        | Received milliseconds_since_first_object should be zero based on interval.  This metric tracks the variance of received objects based on expected interval |
+| Average Bits Per Second | Average bits per second received                                                                                                                           |
+
+
+
+### On completion of track
+
+The following result metrics are computed at the end of a track that has completed. Each track has the following metrics:
+
+| Metric                     | Notes                                                                                               |
+| :------------------------- | :-------------------------------------------------------------------------------------------------- |
+| Objects Sent               | Number of objects reported sent by the publisher                                                    |
+| Groups sent                | Number of groups reported sent by the publisher                                                     |
+| Objects Received           | Number of objects received                                                                          |
+| Groups Received            | Number of groups received                                                                           |
+| Lost Objects               | Computed based on objects received to objects sent                                                  |
+| Total Duration             | Total duration in milliseconds from the publisher                                                   |
+| Actual Duration            | Duration in milliseconds from received first object to last object received                         |
+| Average Receive Variance   | The average receive variance of received objects based on expected interval                         |
+| Average Publisher Variance | The average publisher variance of objects published                                                 |
+| Average Bits Per Second    | The average bits per second received                                                                |
+| Expected Bits Per Second   | Computed bits per second rate based on {{start-message}} first, remaining sizes and interval values |
+
+
 ## Running Benchmark
 
-The configuration profile is used, often with interpolation, to run multiple instances of
-clients connections to the relay.
+Using a configuration profile, multiple instances of clients are ran to connect to the relay.  They will publish and subscribe based on the configuration profile.  Interpolation is used
+to dynamically modify the configuration profile namespace and name based on the test script. In the case of mode 3 (both), the namespace and name will be interpolated based on the test script
+to avoid multi-publisher and mirroring where the publisher subscribes to itself.
 
 # Security Considerations {#security}
 TODO: Expand this section
