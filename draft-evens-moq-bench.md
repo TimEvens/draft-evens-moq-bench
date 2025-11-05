@@ -257,16 +257,16 @@ Objects and groups will continue for as long as the `Duration` value.
 
 Synchronization of the benchmark is required to ensure that all clients start at the same time as the publisher so that objects published can be compared to objects received.
 
-To synchronize the start of the benchmark, the publisher will publish a {{start-message}} repeatedly for the duration of `Start Delay` value in milliseconds. The {{start-message}} will be published every every 1/10th interval of the `Start Delay` value in milliseconds. If 1/10th is less than 100ms, the {{start-message}} will be published every 100ms.
+To synchronize the start of the benchmark, the publisher will publish a start message ({{start-message}}) repeatedly for the duration of `Start Delay` value in milliseconds. The start message will be published every every 1/10th interval of the `Start Delay` value in milliseconds. If 1/10th is less than 100ms, the start message will be published every 100ms.
 
-Clients will subscribe to the published track and will wait for the {{start-message}} to be received. If the start message is not received before data messages or completion message,
+Clients will subscribe to the published track and will wait for the start message ({{start-message}}) to be received. If the start message is not received before data messages or completion message,
 the track benchmark is considered failed.
 
-Clients will ignore the repeated {{start-message}} after receiving the first one. The test begins on the first {{data-message}} message received. {{start-message}} MUST not be sent after sending the first {{data-message}} message.
+Clients will ignore the repeated start messages after receiving the first one. The test begins on the first data message ({{data-message}}) received. Start message MUST not be sent after sending the first data message message.
 
 ## Completion of benchmark
 
-The per track benchmark is completed when the publisher sends a {{completion-message}}. The {{completion-message}} will be sent after the last {{data-message}} message is sent.
+The per track benchmark is completed when the publisher sends a completion message ({{completion-message}}). The completion message will be sent after the last data message ({{data-message}}) message is sent.
 
 ## Messages
 
@@ -274,24 +274,23 @@ Testing utilizes various messages to start testing, send data, and report metric
 
 The following messages are defined:
 
-### START
+### START {#start-message}
 
 ~~~
 START Message {
-  type (8) = 0x01,
+  type (uint8) = 0x01,
   objects_per_group (uint32),
   first_object_size (uint32),
   remaining_object_size (uint32),
   interval (uint32),
 }
 ~~~
-{: #start-message title="Start Test Message" }
 
-### DATA
+### DATA {#data-message}
 
 ~~~
 DATA Message {
-  type (8) = 0x02,
+  type (uint8) = 0x02,
   group_number (uint64),
   object_number (uint64),
   milliseconds_since_first_object (uint32_t),
@@ -299,24 +298,21 @@ DATA Message {
   data (bytes),
 }
 ~~~
-{: #data-message title="Data Message" }
 
 milliseconds_since_first_object:
 : Number of milliseconds since the first object was sent. The first object starts at zero and is incremented by milliseconds from the publisher for each message sent. The publisher adds the time when it
 sends the message. If there are publisher delays, then this time would reflect the delay variance from expected interval.
 
-### COMPLETION
+### COMPLETION {#completion-message}
 
 ~~~
 COMPLETION Message {
-  type (8) = 0x03,
+  type (uint8) = 0x03,
   objects_sent (uint64),
   groups_sent (uint64),
   total_duration (uint32),
 }
 ~~~
-{: #completion-message title="Completion Message" }
-
 
 total_duration:
 : Total duration is the total duration in milliseconds from first object to last object sent
