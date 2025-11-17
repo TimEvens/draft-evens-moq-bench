@@ -39,7 +39,7 @@ author:
     name: Scott Henning
     email: scotthenning00@gmail.com
 
-contributor:
+# contributor:
 #- name: First Last
 #  org:  Cisco
 #  email:  email@cisco.com
@@ -52,15 +52,29 @@ informative:
 
 --- abstract
 
-This document defines a comprehensive methodology for benchmarking Media over QUIC Transport ({{MOQT}}) relays to evaluate their performance under realistic conditions. The methodology utilizes configurable test profiles that simulate common media streaming scenarios including audio-only distribution, combined audio-video streaming, and multi-participant conferencing environments. The framework defines standardized message formats, synchronization mechanisms, and comprehensive metrics collection to ensure reproducible and comparable results across different relay implementations. Test scenarios cover both {{QUIC}} datagram and stream forwarding modes, enabling evaluation of relay performance characteristics such as throughput, latency variance, object loss rates, and resource utilization. The resulting benchmark data facilitates objective comparison and analysis of {{MOQT}} relay implementations, supporting informed deployment decisions and performance optimization efforts.
+This document defines a comprehensive methodology for benchmarking Media over QUIC Transport (MOQT)
+relays to evaluate their performance under realistic conditions. The methodology utilizes configurable
+test profiles that simulate common media streaming scenarios including audio-only distribution, combined
+audio-video streaming, and multi-participant conferencing environments. The framework defines standardized
+message formats, synchronization mechanisms, and comprehensive metrics collection to ensure reproducible
+and comparable results across different relay implementations. Test scenarios cover both (QUIC) datagram
+and stream forwarding modes, enabling evaluation of relay performance characteristics such as throughput,
+latency variance, object loss rates, and resource utilization. The resulting benchmark data facilitates
+objective comparison and analysis of (MOQT) relay implementations, supporting informed deployment decisions
+and performance optimization efforts.
 
 --- middle
 
 # Introduction
 
- {{MOQT}} specifies the client–server interactions and messaging used by clients and relays to fan-out published data to one or more subscribers. Implementations employ several state machines to coordinate these interactions. Relays must serialize and deserialize data objects and their extension headers when forwarding to subscribers. Because {{MOQT}} runs over {{QUIC}}, relay performance is directly affected by receive/send processing, encryption/decryption, and loss‑recovery ACK handling.
+ {{MOQT}} specifies the client-server interactions and messaging used by clients and relays to fan-out
+ published data to one or more subscribers. Implementations employ several state machines to coordinate
+ these interactions. Relays must serialize and deserialize data objects and their extension headers when
+ forwarding to subscribers. Because {{MOQT}} runs over {{QUIC}}, relay performance is directly affected
+ by receive/send processing, encryption/decryption, and loss-recovery ACK handling.
 
- To evaluate relay performance under realistic conditions, this document defines a benchmarking methodology that mimics real‑world use cases.
+ To evaluate relay performance under realistic conditions, this document defines a benchmarking methodology
+ that mimics real-world use cases.
 
 # Terminology
 
@@ -69,7 +83,8 @@ This document defines a comprehensive methodology for benchmarking Media over QU
 Commonly used terms in this document are described below.
 
 Track Configurations:
-: Track configurations define the parameters and settings for individual media tracks used in benchmarking, including transmission patterns, object sizes, intervals, and delivery modes.
+: Track configurations define the parameters and settings for individual media tracks used in benchmarking,
+including transmission patterns, object sizes, intervals, and delivery modes.
 
 
 Config Profile:
@@ -77,11 +92,13 @@ Config Profile:
 of relays.
 
 Test Scenario:
-: A test scenario is a set of config profiles that are used to perform a series of tests to evaluate the performance
+: A test scenario is a set of config profiles that are used to perform a series of tests to evaluate the
+performance
 of relays.
 
 Relay:
-: A {{MOQT}} relay is an intermediary that receives published media objects from publishers and forwards them to subscribers, providing fan-out distribution capabilities.
+: A {{MOQT}} relay is an intermediary that receives published media objects from publishers and forwards
+them to subscribers, providing fan-out distribution capabilities.
 
 Publisher:
 : An entity that produces and sends media objects to a {{MOQT}} relay for distribution to subscribers.
@@ -90,10 +107,12 @@ Subscriber:
 : An entity that receives media objects from a {{MOQT}} relay by subscribing to specific tracks.
 
 Track:
-: A sequence of related media objects identified by a namespace and track name, representing a single media stream such as audio or video.
+: A sequence of related media objects identified by a namespace and track name, representing a single
+media stream such as audio or video.
 
 Group:
-: A collection of related objects within a track that have dependencies on each other, typically used for video frames where objects within a group are interdependent.
+: A collection of related objects within a track that have dependencies on each other, typically used
+for video frames where objects within a group are interdependent.
 
 Object:
 : An individual unit of media data transmitted within a track, such as an audio sample or video frame.
@@ -113,21 +132,29 @@ Data transmission patterns are relative to the data that is being transmitted at
 
 ## Video Media
 
-Video media is a common {{MOQT}} use case. A video media track typically begins with a large data object, followed by a series of smaller data objects within the same group. The initial object is often significantly larger than the subsequent ones. Video is transmitted at regular intervals (e.g., every 33 ms for 30 fps), producing a bursty fan‑out pattern at each interval. Each data object commonly carries at least three extension
+Video media is a common {{MOQT}} use case. A video media track typically begins with a large data object,
+followed by a series of smaller data objects within the same group. The initial object is often
+significantly larger than the subsequent ones. Video is transmitted at regular intervals
+(e.g., every 33 ms for 30 fps), producing a bursty fan-out pattern at each interval. Each data object
+commonly carries at least three extension
 headers.
 
 Video has a direct dependency on previous objects within a group. If objects are lost in a group, it breaks
 the ability to render the video correctly.
 
 Video is often larger than MTU and cannot be transmitted as
-defined in {{MOQT}} using datagram. Unless video is very low quality, video uses {{QUIC}} stream forwarding instead of datagram forwarding.
+defined in {{MOQT}} using datagram. Unless video is very low quality, video uses {{QUIC}} stream forwarding
+instead of datagram forwarding.
 
 ## Audio Media
 
-Audio media is a common {{MOQT}} use case. An audio media track typically maintains fixed intervals with similarly sized data objects. Like video, transmission occurs at each interval, producing a periodic fan‑out burst. Each data object usually carries fewer than three extension headers.
+Audio media is a common {{MOQT}} use case. An audio media track typically maintains fixed intervals with
+similarly sized data objects. Like video, transmission occurs at each interval, producing a periodic fan-out
+burst. Each data object usually carries fewer than three extension headers.
 
-{{MOQT}} does not define how to handle larger than MTU sized data objects for {{QUIC}} datagrams.  Audio does not
-have the same requirement as video where subsequent data objects are related to the previous object or group.
+{{MOQT}} does not define how to handle larger than MTU sized data objects for {{QUIC}} datagrams.  Audio
+does not have the same requirement as video where subsequent data objects are related to the previous
+object or group.
 
 Audio is a prime candidate for datagram considering the size of the data objects are less than MTU and
 there is no dependency on previous object within a group.
@@ -143,109 +170,121 @@ can receive it.
 
 ## Interactive Data
 
-Chat, metrics, and logging are use cases for interactive data. This data is sent based on interaction, such as a human typing a message or metrics event, or logging event.  A unique
-characteristic of this data is that it is sent when needed and isn't always constant. Metrics might be an exception where metrics are sent at a constant interval, but metrics may also be sent based on a triggered event.
+Chat, metrics, and logging are use cases for interactive data. This data is sent based on interaction,
+such as a human typing a message or metrics event, or logging event.  A unique
+characteristic of this data is that it is sent when needed and isn't always constant. Metrics might be
+an exception where metrics are sent at a constant interval, but metrics may also be sent based on a triggered event.
 
-Interactive data is often sent using {{QUIC}} streams but can also be sent via datagram considering the size of the data is often less than MTU size.
+Interactive data is often sent using {{QUIC}} streams but can also be sent via datagram considering
+the size of the data is often less than MTU size.
 
 ## Group and Subgroup Impact to Relays
 
-In {{MOQT}}, when a group or subgroup changes a {{QUIC}} stream is created for the group/subgroup.  This results in additional state for the {{MOQT}} relay implementation to handle multiple groups/subgroups in-flight.  The data transmission use case drives how frequently groups/subgroups change, which can impact the performance of relays. Changing of group/subgroup is only impactful with {{MOQT}} stream tracks.
+In {{MOQT}}, when a group or subgroup changes a {{QUIC}} stream is created for the group/subgroup.
+This results in additional state for the {{MOQT}} relay implementation to handle multiple groups/subgroups in-flight.
+The data transmission use case drives how frequently groups/subgroups change, which can impact the performance
+of relays. Changing of group/subgroup is only impactful with {{MOQT}} stream tracks.
 
 
 # Scenarios
 
-A combination of data patterns are used to define a scenario. The scenario becomes a Config Profile. Various data patterns are combined to define a scenario. The scenario (Config Profile)
+A combination of data patterns are used to define a scenario. The scenario becomes a Config Profile. Various
+data patterns are combined to define a scenario. The scenario (Config Profile)
 is used to benchmark a relay.
 
 Below describes common scenarios that the benchmark and configuration profiles need to support.
 Other scenarios can be defined as needed using the configuration profiles.
 
-## Single Publisher to Multiple Subscribers - Audio
+## Scenario 1: Single Publisher to Multiple Subscribers - Audio
 
 ~~~ aasvg
-                   ┌──────────────┐
-                   │   Publisher  │
-                   └──────────────┘
-                           │
-                           │
-                           ▼
-                      ┌─────────┐
-        ┌─────────────│  Relay  │──────────────┐
-        │             └─────────┘              │
-        │                  │                   │
-        ▼                  ▼                   ▼
-┌──────────────┐    ┌──────────────┐   ┌──────────────┐
-│ Subscriber 1 │    │ Subscriber 2 │   │ Subscriber 3 │
-└──────────────┘    └──────────────┘   └──────────────┘
+                   +--------------+
+                   |   Publisher  |
+                   +--------------+
+                           |
+                           |
+                           v
+                      +---------+
+        +-------------|  Relay  |--------------+
+        |             +---------+              |
+        |                  |                   |
+        v                  v                   v
++--------------+    +--------------+   +--------------+
+| Subscriber 1 |    | Subscriber 2 |   | Subscriber 3 |
++--------------+    +--------------+   +--------------+
 ~~~
 {: artwork-align="center" artwork-name="Publisher to Many Subscribers"}
 
 The above diagram shows a single publisher sending audio to multiple subscribers.
 
-A single audio track is published using datagram. The audio track is sent at a constant interval that is then sent to all subscribers.  The benchmark is to see how many subscribers can be supported by the relay using datagram forwarding.
+A single audio track is published using datagram. The audio track is sent at a constant interval that is
+then sent to all subscribers.  The benchmark is to see how many subscribers can be supported by the relay
+using datagram forwarding.
 
 
-## Single Publisher to Multiple Subscribers - Audio and Video
+## Scenario 2: Single Publisher to Multiple Subscribers -  Audio and Video
 
 ~~~ aasvg
-                   ┌──────────────┐
-                   │   Publisher  │
-                   └──────────────┘
-                           │
-                           │
-                           ▼
-                      ┌─────────┐
-        ┌─────────────│  Relay  │──────────────┐
-        │             └─────────┘              │
-        │                  │                   │
-        ▼                  ▼                   ▼
-┌──────────────┐    ┌──────────────┐   ┌──────────────┐
-│ Subscriber 1 │    │ Subscriber 2 │   │ Subscriber 3 │
-└──────────────┘    └──────────────┘   └──────────────┘
+                   +--------------+
+                   |   Publisher  |
+                   +--------------+
+                           |
+                           |
+                           v
+                      +---------+
+        +-------------|  Relay  |--------------+
+        |             +---------+              |
+        |                  |                   |
+        v                  v                   v
++--------------+    +--------------+   +--------------+
+| Subscriber 1 |    | Subscriber 2 |   | Subscriber 3 |
++--------------+    +--------------+   +--------------+
 ~~~
 {: artwork-align="center" artwork-name="Publisher to Many Subscribers"}
 
 The above diagram shows a single publisher sending audio and video to multiple subscribers.
 
-Two tracks are published, an audio datagram track and a reliable stream track for video. The benchmark is to see how many subscribers can be supported by the relay using both datagram and
+Two tracks are published, an audio datagram track and a reliable stream track for video. The benchmark is to see
+how many subscribers can be supported by the relay using both datagram and
 stream forwarding tracks.
 
-## Groups of Publishers and Subscribers (aka Meeting)
+## Scenario 3: Groups of Publishers and Subscribers (aka Meeting)
 
 ~~~ aasvg
-
-   ┌─────────────────────────────────────────────────────┐
-   │ namespace = meeting, 1234                           │
-   │                                                     │
-   │ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐  │
-   │ │ Publisher 1  │ │ Publisher 2  │ │ Publisher 3  │  │
-   │ │ Subscriber 1 │ │ Subscriber 2 │ │ Subscriber 3 │  │
-   │ └───────▲──────┘ └──────▲───────┘ └──────▲───────┘  │
-   │         │               │                │          │
-   └─────────┼───────────────┼────────────────┼──────────┘
-             │               │                │
-             │               │                │
-             │               │                │
-             │        ┌──────┴───────┐        │
-             ├────────┤    Relay     ├────────┤
-             │        └──────┬───────┘        │
-             │               │                │
-             │               │                │
-             │               │                │
-   ┌─────────┼───────────────┼────────────────┼──────────┐
-   │         │               │                │          │
-   │ ┌───────▼──────┐ ┌──────▼───────┐ ┌──────▼───────┐  │
-   │ │ Publisher 1  │ │ Publisher 2  │ │ Publisher 3  │  │
-   │ │ Subscriber 1 │ │ Subscriber 2 │ │ Subscriber 3 │  │
-   │ └──────────────┘ └──────────────┘ └──────────────┘  │
-   │                                                     │
-   │ namespace = meeting, 5678                           │
-   └─────────────────────────────────────────────────────┘
++-----------------------------------------------------+
+| namespace = meeting, 1234                           |
+|                                                     |
+| +--------------+ +--------------+ +--------------+  |
+| | Publisher 1  | | Publisher 2  | | Publisher 3  |  |
+| | Subscriber 1 | | Subscriber 2 | | Subscriber 3 |  |
+| +-------^------+ +------^-------+ +------^-------+  |
+|         |               |                |          |
++---------+---------------+----------------+----------+
+          |               |                |
+          |               |                |
+          |               |                |
+          |        +------+-------+        |
+          +--------+    Relay     +--------+
+          |        +------+-------+        |
+          |               |                |
+          |               |                |
+          |               |                |
++---------+---------------+----------------+----------+
+|         |               |                |          |
+| +-------v------+ +------v-------+ +------v-------+  |
+| | Publisher 1  | | Publisher 2  | | Publisher 3  |  |
+| | Subscriber 1 | | Subscriber 2 | | Subscriber 3 |  |
+| +--------------+ +--------------+ +--------------+  |
+|                                                     |
+| namespace = meeting, 5678                           |
++-----------------------------------------------------+
 ~~~
 {: artwork-align="center" artwork-name="Groups of Publishers and Subscribers"}
 
-The above diagram shows a set of publishers and subscribers. Each client in this scenario publishes two tracks, audio and video, and subscribe to the other subscribers audio and video tracks.  In this scenario, the set of publishers and subscribers mimic a video conference meeting.  The benchmark is to see how many sets (aka meetings) can be supported by the relay using datagram and stream forwarding tracks.
+The above diagram shows a set of publishers and subscribers. Each client in this scenario publishes two tracks,
+audio and video, and subscribe to the other subscribers audio and video tracks.  In this scenario, the set of
+publishers and subscribers mimic a video conference meeting.  The benchmark is to see how many sets (aka meetings)
+can be supported by the relay using datagram and stream forwarding tracks.
 
 # Methodology
 
@@ -253,26 +292,29 @@ The above diagram shows a set of publishers and subscribers. Each client in this
 
 A configuration profile consists of per track configuration settings. The following track settings are defined:
 
-| Field | Notes |
-|:-------|:--------------------------------------|
-| namespace | Namespace tuple of the track |
-| name | Name of the track |
-| reliable | True to use QUIC streams and false to use datagrams |
-| mode | Is a value of 1 to indicate publisher, 2 to indicate subscriber, or 3 to indicate both. When both, the track namespace or name will often be interpolated based on the test script |
-| priority | Priority of the track |
-| ttl | Time to live for objects published |
-| interval | Interval in milliseconds to send data objects |
-| Objects Per Group | Number of objects within a group |
-| First Object Size | First object of group size in bytes |
-| Remaining Object Size | Remaining objects of group size in bytes |
-| Duration | Duration in milliseconds to send data objects |
-| Start Delay | Start delay in milliseconds |
+| Field                 | Notes                                                                                                                                                                              |
+| :-------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| namespace             | Namespace tuple of the track                                                                                                                                                       |
+| name                  | Name of the track                                                                                                                                                                  |
+| reliable              | True to use QUIC streams and false to use datagrams                                                                                                                                |
+| mode                  | Is a value of 1 to indicate publisher, 2 to indicate subscriber, or 3 to indicate both. When both, the track namespace or name will often be interpolated based on the test script |
+| priority              | Priority of the track                                                                                                                                                              |
+| ttl                   | Time to live for objects published                                                                                                                                                 |
+| interval              | Interval in milliseconds to send data objects                                                                                                                                      |
+| Objects Per Group     | Number of objects within a group                                                                                                                                                   |
+| First Object Size     | First object of group size in bytes                                                                                                                                                |
+| Remaining Object Size | Remaining objects of group size in bytes                                                                                                                                           |
+| Duration              | Duration in milliseconds to send data objects                                                                                                                                      |
+| Start Delay           | Start delay in milliseconds                                                                                                                                                        |
 {: title="Textual NodeId Formats" }
 
 Interpolation can be used to template the configuration profile.
 
-Upon start, the track will start off with `"First Object Size"` of data bytes.  Subsequent objects will use the `Remaining Object Size` in bytes. The remaining objects sent will be
-`Objects Per Group` number minus the first object. For example, if `Objects Per Group` is 10 and `First Object Size` is 100 bytes and `Remaining Object Size` is 50 bytes, then the first group will be 100 bytes and the remaining 9 groups will be 50 bytes each.
+Upon start, the track will start off with `"First Object Size"` of data bytes.  Subsequent objects will use the
+`Remaining Object Size` in bytes. The remaining objects sent will be `Objects Per Group` number minus the
+first object. For example, if `Objects Per Group` is 10 and `First Object Size` is 100 bytes and
+`Remaining Object Size` is 50 bytes, then the first group will be 100 bytes and the remaining 9
+groups will be 50 bytes each.
 
 Groups value will increment based on sending `Objects Per Group` number of objects. TTL is used
 to define how long published objects should remain in the transmit queue.
@@ -283,18 +325,26 @@ Objects and groups will continue for as long as the `Duration` value.
 
 ## Synchronize Start of Benchmark
 
-Synchronization of the benchmark is required to ensure that all clients start at the same time as the publisher so that objects published can be compared to objects received.
+Synchronization of the benchmark is required to ensure that all clients start at the same time as
+the publisher so that objects published can be compared to objects received.
 
-To synchronize the start of the benchmark, the publisher will publish a start message ({{start-message}}) repeatedly for the duration of `Start Delay` value in milliseconds. The start message will be published every every 1/10th interval of the `Start Delay` value in milliseconds. If 1/10th is less than 100ms, the start message will be published every 100ms.
+To synchronize the start of the benchmark, the publisher will publish a start message ({{start-message}})
+repeatedly for the duration of `Start Delay` value in milliseconds. The start message will be published
+every every 1/10th interval of the `Start Delay` value in milliseconds. If 1/10th is less than 100ms,
+the start message will be published every 100ms.
 
-Clients will subscribe to the published track and will wait for the start message ({{start-message}}) to be received. If the start message is not received before data messages or completion message,
+Clients will subscribe to the published track and will wait for the start message ({{start-message}})
+to be received. If the start message is not received before data messages or completion message,
 the track benchmark is considered failed.
 
-Clients will ignore the repeated start messages after receiving the first one. The test begins on the first data message ({{data-message}}) received. Start message MUST not be sent after sending the first data message message.
+Clients will ignore the repeated start messages after receiving the first one. The test begins on the
+first data message ({{data-message}}) received. Start message MUST NOT be sent after sending the
+first data message message.
 
 ## Completion of benchmark
 
-The per track benchmark is completed when the publisher sends a completion message ({{completion-message}}). The completion message will be sent after the last data message ({{data-message}}) message is sent.
+The per track benchmark is completed when the publisher sends a completion message ({{completion-message}}).
+The completion message will be sent after the last data message ({{data-message}}) message is sent.
 
 ## Messages
 
@@ -328,8 +378,10 @@ DATA Message {
 ~~~
 
 milliseconds_since_first_object:
-: Number of milliseconds since the first object was sent. The first object starts at zero and is incremented by milliseconds from the publisher for each message sent. The publisher adds the time when it
-sends the message. If there are publisher delays, then this time would reflect the delay variance from expected interval.
+: Number of milliseconds since the first object was sent. The first object starts at zero and is
+incremented by milliseconds from the publisher for each message sent. The publisher adds the time
+when it sends the message. If there are publisher delays, then this time would reflect the delay variance
+from expected interval.
 
 ### COMPLETION {#completion-message}
 
@@ -386,13 +438,11 @@ The following result metrics are computed at the end of a track that has complet
 
 ## Running Benchmark
 
-Using a configuration profile, multiple instances of clients are ran to connect to the relay.  They will publish and subscribe based on the configuration profile.  Interpolation is used
-to dynamically modify the configuration profile namespace and name based on the test script. In the case of mode 3 (both), the namespace and name will be interpolated based on the test script
-to avoid multi-publisher and mirroring where the publisher subscribes to itself.
-
-# Security Considerations {#security}
-
-This document defines a benchmarking methodology and does not introduce new security vulnerabilities beyond those inherent in {{MOQT}} and {{QUIC}}. However, the following security considerations apply when implementing and running benchmarks:
+Using a configuration profile, multiple instances of clients are ran to connect to the relay.  They will
+publish and subscribe based on the configuration profile.  Interpolation is used to dynamically modify the
+configuration profile namespace and name based on the test script. In the case of mode 3 (both), the
+namespace and name will be interpolated based on the test script to avoid multi-publisher and mirroring
+where the publisher subscribes to itself.
 
 ## Test Environment Isolation
 
@@ -428,7 +478,8 @@ While benchmark data is typically synthetic, implementations SHOULD:
 
 ## Implementation Security
 
-Benchmark tools MUST follow secure coding practices and SHOULD undergo security review, as they may be deployed in sensitive network environments.
+Benchmark tools MUST follow secure coding practices and SHOULD undergo security review,
+as they may be deployed in sensitive network environments.
 
 # IANA Considerations
 
@@ -439,4 +490,127 @@ This document does not require any IANA actions. The benchmarking methodology de
 - Uses existing {{MOQT}} and {{QUIC}} protocol mechanisms without extension
 - Defines message formats for benchmarking purposes only, which are not part of the {{MOQT}} protocol specification
 
-The message type values defined in this document (0x01, 0x02, 0x03) are used solely within the context of benchmarking implementations and do not conflict with or extend the {{MOQT}} protocol message space.
+The message type values defined in this document (0x01, 0x02, 0x03) are used solely within the
+context of benchmarking implementations and do not conflict with or extend the {{MOQT}} protocol message space.
+
+# Security Considerations {#security-considerations}
+
+This document defines a benchmarking methodology and does not introduce new security vulnerabilities beyond
+those inherent in {{MOQT}} and {{QUIC}}. However, the following security considerations apply when
+implementing and running benchmarks.
+
+
+--- back
+
+# Example Benchmark Results
+
+Below are example results from running benchmark against existing relays.
+
+## Environment
+Each benchmark test was using the same set of EC2 instances in AWS.  The publisher
+and relay ran on a one EC2 instance while the clients ran on one or more separate
+EC2 instances.
+
+* **EC2 Instance Type**: c8g.2xlarge (Graviton4 ARM processors (2.7/2.8GHz), 8 cores, 16GB ram
+* **Networking**: UP to 15Gbps. All instances on same VPC subnet and no NAT gateway was used
+
+## Benchmark Tool
+
+[qperf](https://github.com/quicr/qperf) benchmark implementation was used.
+
+## Relays
+
+Benchmark tests two open source relays using latest main branches on September 25th, 2025.
+
+* [LAPS](https://github.com/quicr/laps)
+* [Moxygen](https://github.com/facebookexperimental/moxygen)
+
+## Scenario 1: Single publisher audio
+
+### Config Profile
+
+~~~
+[Audio Datagram]
+namespace           = perf/audio/{} ; MAY be the same across tracks,
+                                    ; entries delimited by /
+name                = 1          ; SHOULD be unique to other tracks
+track_mode          = datagram   ; (datagram|stream)
+priority            = 2          ; (0-255)
+ttl                 = 5000       ; TTL in ms
+time_interval       = 20         ; transmit interval in floating
+                                 ; point ms
+objects_per_group   = 1          ; number of objects per group >=1
+first_object_size   = 120        ; size in bytes of the first object
+                                 ; in a group
+object_size         = 120        ; size in bytes of remaining objects
+                                 ; in a group
+start_delay         = 5000       ; start delay in ms - after control
+                                 ; messages are sent and acknowledged
+total_transmit_time = 35000      ; total transmit time in ms,
+                                 ; including start delay
+~~~
+
+### Results
+
+| Relay   | Number of Subscribers | Notes                                                       |
+| ------- | --------------------- | ----------------------------------------------------------- |
+| LAPS    | 2000                  | No dropped datagrams and CPU was under 95% on a single core |
+| Moxygen | 1000                  | No dropped datagrams and CPU was under 95% on a single core |
+{: title="Scenario 1 Relay Results"}
+
+## Scenario 2: Single publisher audio/video
+
+### Config Profile
+
+~~~
+[Audio Datagram]
+namespace          = perf/audio/{}  ; MAY be the same across tracks,
+                                 ; entries delimited by /
+name               = 1           ; SHOULD be unique to other tracks
+track_mode         = datagram    ; (datagram|stream)
+priority           = 2           ; (0-255)
+ttl                = 5000        ; TTL in ms
+time_interval      = 20          ; transmit interval in floating
+                                 ; point ms
+objects_per_group  = 1           ; number of objects per group >=1
+first_object_size  = 120         ; size in bytes of the first
+                                 ; object in group
+object_size        = 120         ; size in bytes of remaining
+                                 ; objects in a group
+start_delay        = 5000        ; start delay in ms - after control
+                                 ; messages are sent and acknowledged
+total_transmit_time = 35000      ; total transmit time in ms
+
+[360p Video]
+namespace          = perf/video/{}  ; MAY be the same across tracks,
+                                    ; entries delimited by /
+name               = 1          ; SHOULD be unique to other tracks
+track_mode         = stream     ; (datagram|stream)
+priority           = 3          ; (0-255)
+ttl                = 5000       ; TTL in ms
+time_interval      = 33.33      ; transmit interval in floating
+                                ; point ms
+objects_per_group  = 150        ; number of objects per group >=1
+first_object_size  = 21333      ; size in bytes of the first object
+                                ; in a group
+object_size        = 2666       ; size in bytes of remaining objects
+                                ; in a group
+start_delay        = 5000       ; start delay in ms - after control
+                                ; messages are sent and acknowledged
+total_transmit_time = 35000     ; total transmit time in ms
+~~~
+
+### Results
+
+| Relay   | Number of Subscribers | Notes                                                                                                                                 |
+| ------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| LAPS    | 1000                  | No dropped datagrams or stream data. CPU was under 95% on a single core                                                               |
+| Moxygen | 250                   | Datagrams started to get lost after 250 and subscriptions started to close and fail after 250. CPU on a single core was less than 85% |
+{: title="Scenario 2 Relay Results"}
+
+
+# Acknowledgments {#Acknowledgements}
+{: numbered="false"}
+
+
+Thank you to Suhas Nandakumar for their reviews and suggestions.
