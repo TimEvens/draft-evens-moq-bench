@@ -495,7 +495,7 @@ total_test_time       = 40000          ; total transmit time in ms - including s
 | ------- | --------------------- | ----------------------------------------------------------- |
 | LAPS    | 2000                  | No dropped datagrams and CPU was under 95% on a single core |
 | Moxygen | 1000                  | No dropped datagrams and CPU was under 95% on a single core |
-{: title="Relay Results"}
+{: title="Scenario 1 Relay Results"}
 
 ## Scenario 2: Single publisher audio/video
 
@@ -535,7 +535,7 @@ total_test_time       = 40000          ; total transmit time in ms - including s
 | ------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | LAPS    | 1000                  | No dropped datagrams or stream data. CPU was under 95% on a single core                                                               |
 | Moxygen | 250                   | Datagrams started to get lost after 250 and subscriptions started to close and fail after 250. CPU on a single core was less than 85% |
-{: title="Relay Results"}
+{: title="Scenario 2 Relay Results"}
 
 
 # Acknowledgments {#Acknowledgements}
