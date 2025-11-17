@@ -9,7 +9,16 @@
 <meta content="Tomas Rigaux" name="author">
 <meta content="Scott Henning" name="author">
 <meta content="
-       This document defines a comprehensive methodology for benchmarking Media over QUIC Transport ( ) relays to evaluate their performance under realistic conditions. The methodology utilizes configurable test profiles that simulate common media streaming scenarios including audio-only distribution, combined audio-video streaming, and multi-participant conferencing environments. The framework defines standardized message formats, synchronization mechanisms, and comprehensive metrics collection to ensure reproducible and comparable results across different relay implementations. Test scenarios cover both   datagram and stream forwarding modes, enabling evaluation of relay performance characteristics such as throughput, latency variance, object loss rates, and resource utilization. The resulting benchmark data facilitates objective comparison and analysis of   relay implementations, supporting informed deployment decisions and performance optimization efforts. 
+       This document defines a comprehensive methodology for benchmarking Media over QUIC Transport (MOQT)
+relays to evaluate their performance under realistic conditions. The methodology utilizes configurable
+test profiles that simulate common media streaming scenarios including audio-only distribution, combined
+audio-video streaming, and multi-participant conferencing environments. The framework defines standardized
+message formats, synchronization mechanisms, and comprehensive metrics collection to ensure reproducible
+and comparable results across different relay implementations. Test scenarios cover both (QUIC) datagram
+and stream forwarding modes, enabling evaluation of relay performance characteristics such as throughput,
+latency variance, object loss rates, and resource utilization. The resulting benchmark data facilitates
+objective comparison and analysis of (MOQT) relay implementations, supporting informed deployment decisions
+and performance optimization efforts. 
     " name="description">
 <meta content="xml2rfc 3.31.0" name="generator">
 <meta content="media over quic" name="keyword">
@@ -1049,7 +1058,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Evens, et al.</td>
-<td class="center">Expires 9 May 2026</td>
+<td class="center">Expires 21 May 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1062,12 +1071,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-evens-moq-bench-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-11-05" class="published">5 November 2025</time>
+<time datetime="2025-11-17" class="published">17 November 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-05-09">9 May 2026</time></dd>
+<dd class="expires"><time datetime="2026-05-21">21 May 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1087,7 +1096,16 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <h1 id="title">Media over QUIC Relay Benchmark Methodology</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">This document defines a comprehensive methodology for benchmarking Media over QUIC Transport (<span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span>) relays to evaluate their performance under realistic conditions. The methodology utilizes configurable test profiles that simulate common media streaming scenarios including audio-only distribution, combined audio-video streaming, and multi-participant conferencing environments. The framework defines standardized message formats, synchronization mechanisms, and comprehensive metrics collection to ensure reproducible and comparable results across different relay implementations. Test scenarios cover both <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span> datagram and stream forwarding modes, enabling evaluation of relay performance characteristics such as throughput, latency variance, object loss rates, and resource utilization. The resulting benchmark data facilitates objective comparison and analysis of <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> relay implementations, supporting informed deployment decisions and performance optimization efforts.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">This document defines a comprehensive methodology for benchmarking Media over QUIC Transport (MOQT)
+relays to evaluate their performance under realistic conditions. The methodology utilizes configurable
+test profiles that simulate common media streaming scenarios including audio-only distribution, combined
+audio-video streaming, and multi-participant conferencing environments. The framework defines standardized
+message formats, synchronization mechanisms, and comprehensive metrics collection to ensure reproducible
+and comparable results across different relay implementations. Test scenarios cover both (QUIC) datagram
+and stream forwarding modes, enabling evaluation of relay performance characteristics such as throughput,
+latency variance, object loss rates, and resource utilization. The resulting benchmark data facilitates
+objective comparison and analysis of (MOQT) relay implementations, supporting informed deployment decisions
+and performance optimization efforts.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1124,7 +1142,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 9 May 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 21 May 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1183,13 +1201,13 @@ svg :is([fill="white"], [fill^="#fff"]) {
             <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-scenarios" class="internal xref">Scenarios</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1">
-                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-single-publisher-to-multipl" class="internal xref">Single Publisher to Multiple Subscribers - Audio</a></p>
+                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-scenario-1-single-publisher" class="internal xref">Scenario 1: Single Publisher to Multiple Subscribers - Audio</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2">
-                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="auto internal xref">4.2</a>.  <a href="#name-single-publisher-to-multiple" class="internal xref">Single Publisher to Multiple Subscribers - Audio and Video</a></p>
+                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="auto internal xref">4.2</a>.  <a href="#name-scenario-2-single-publisher" class="internal xref">Scenario 2: Single Publisher to Multiple Subscribers -  Audio and Video</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3">
-                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="auto internal xref">4.3</a>.  <a href="#name-groups-of-publishers-and-su" class="internal xref">Groups of Publishers and Subscribers (aka Meeting)</a></p>
+                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="auto internal xref">4.3</a>.  <a href="#name-scenario-3-groups-of-publis" class="internal xref">Scenario 3: Groups of Publishers and Subscribers (aka Meeting)</a></p>
 </li>
             </ul>
 </li>
@@ -1233,30 +1251,28 @@ svg :is([fill="white"], [fill^="#fff"]) {
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.6">
                 <p id="section-toc.1-1.5.2.6.1"><a href="#section-5.6" class="auto internal xref">5.6</a>.  <a href="#name-running-benchmark" class="internal xref">Running Benchmark</a></p>
 </li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.7">
+                <p id="section-toc.1-1.5.2.7.1"><a href="#section-5.7" class="auto internal xref">5.7</a>.  <a href="#name-test-environment-isolation" class="internal xref">Test Environment Isolation</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.8">
+                <p id="section-toc.1-1.5.2.8.1"><a href="#section-5.8" class="auto internal xref">5.8</a>.  <a href="#name-authentication-and-authoriz" class="internal xref">Authentication and Authorization</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.9">
+                <p id="section-toc.1-1.5.2.9.1"><a href="#section-5.9" class="auto internal xref">5.9</a>.  <a href="#name-resource-management" class="internal xref">Resource Management</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.10">
+                <p id="section-toc.1-1.5.2.10.1"><a href="#section-5.10" class="auto internal xref">5.10</a>. <a href="#name-data-privacy" class="internal xref">Data Privacy</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.11">
+                <p id="section-toc.1-1.5.2.11.1"><a href="#section-5.11" class="auto internal xref">5.11</a>. <a href="#name-implementation-security" class="internal xref">Implementation Security</a></p>
+</li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
-            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1">
-                <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-test-environment-isolation" class="internal xref">Test Environment Isolation</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2">
-                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="auto internal xref">6.2</a>.  <a href="#name-authentication-and-authoriz" class="internal xref">Authentication and Authorization</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.3">
-                <p id="section-toc.1-1.6.2.3.1"><a href="#section-6.3" class="auto internal xref">6.3</a>.  <a href="#name-resource-management" class="internal xref">Resource Management</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.4">
-                <p id="section-toc.1-1.6.2.4.1"><a href="#section-6.4" class="auto internal xref">6.4</a>.  <a href="#name-data-privacy" class="internal xref">Data Privacy</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.5">
-                <p id="section-toc.1-1.6.2.5.1"><a href="#section-6.5" class="auto internal xref">6.5</a>.  <a href="#name-implementation-security" class="internal xref">Implementation Security</a></p>
-</li>
-            </ul>
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
-            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
             <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-references" class="internal xref">References</a></p>
@@ -1270,7 +1286,46 @@ svg :is([fill="white"], [fill^="#fff"]) {
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
-            <p id="section-toc.1-1.9.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+            <p id="section-toc.1-1.9.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-example-benchmark-results" class="internal xref">Example Benchmark Results</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
+                <p id="section-toc.1-1.9.2.1.1"><a href="#appendix-A.1" class="auto internal xref">A.1</a>.  <a href="#name-environment" class="internal xref">Environment</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2">
+                <p id="section-toc.1-1.9.2.2.1"><a href="#appendix-A.2" class="auto internal xref">A.2</a>.  <a href="#name-benchmark-tool" class="internal xref">Benchmark Tool</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.3">
+                <p id="section-toc.1-1.9.2.3.1"><a href="#appendix-A.3" class="auto internal xref">A.3</a>.  <a href="#name-relays" class="internal xref">Relays</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.4">
+                <p id="section-toc.1-1.9.2.4.1"><a href="#appendix-A.4" class="auto internal xref">A.4</a>.  <a href="#name-scenario-1-single-publisher-" class="internal xref">Scenario 1: Single publisher audio</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.4.2.1">
+                    <p id="section-toc.1-1.9.2.4.2.1.1"><a href="#appendix-A.4.1" class="auto internal xref">A.4.1</a>.  <a href="#name-config-profile-2" class="internal xref">Config Profile</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.4.2.2">
+                    <p id="section-toc.1-1.9.2.4.2.2.1"><a href="#appendix-A.4.2" class="auto internal xref">A.4.2</a>.  <a href="#name-results" class="internal xref">Results</a></p>
+</li>
+                </ul>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.5">
+                <p id="section-toc.1-1.9.2.5.1"><a href="#appendix-A.5" class="auto internal xref">A.5</a>.  <a href="#name-scenario-2-single-publisher-" class="internal xref">Scenario 2: Single publisher audio/video</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.5.2.1">
+                    <p id="section-toc.1-1.9.2.5.2.1.1"><a href="#appendix-A.5.1" class="auto internal xref">A.5.1</a>.  <a href="#name-config-profile-3" class="internal xref">Config Profile</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.5.2.2">
+                    <p id="section-toc.1-1.9.2.5.2.2.1"><a href="#appendix-A.5.2" class="auto internal xref">A.5.2</a>.  <a href="#name-results-2" class="internal xref">Results</a></p>
+</li>
+                </ul>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
+            <p id="section-toc.1-1.10.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -1281,8 +1336,13 @@ svg :is([fill="white"], [fill^="#fff"]) {
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1"><span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> specifies the client–server interactions and messaging used by clients and relays to fan-out published data to one or more subscribers. Implementations employ several state machines to coordinate these interactions. Relays must serialize and deserialize data objects and their extension headers when forwarding to subscribers. Because <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> runs over <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span>, relay performance is directly affected by receive/send processing, encryption/decryption, and loss‑recovery ACK handling.<a href="#section-1-1" class="pilcrow">¶</a></p>
-<p id="section-1-2">To evaluate relay performance under realistic conditions, this document defines a benchmarking methodology that mimics real‑world use cases.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-1"><span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> specifies the client-server interactions and messaging used by clients and relays to fan-out
+ published data to one or more subscribers. Implementations employ several state machines to coordinate
+ these interactions. Relays must serialize and deserialize data objects and their extension headers when
+ forwarding to subscribers. Because <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> runs over <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span>, relay performance is directly affected
+ by receive/send processing, encryption/decryption, and loss-recovery ACK handling.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">To evaluate relay performance under realistic conditions, this document defines a benchmarking methodology
+ that mimics real-world use cases.<a href="#section-1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="terminology">
@@ -1298,7 +1358,8 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <span class="break"></span><dl class="dlParallel" id="section-2-3">
         <dt id="section-2-3.1">Track Configurations:</dt>
         <dd style="margin-left: 1.5em" id="section-2-3.2">
-          <p id="section-2-3.2.1">Track configurations define the parameters and settings for individual media tracks used in benchmarking, including transmission patterns, object sizes, intervals, and delivery modes.<a href="#section-2-3.2.1" class="pilcrow">¶</a></p>
+          <p id="section-2-3.2.1">Track configurations define the parameters and settings for individual media tracks used in benchmarking,
+including transmission patterns, object sizes, intervals, and delivery modes.<a href="#section-2-3.2.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 <dt id="section-2-3.3">Config Profile:</dt>
@@ -1309,13 +1370,15 @@ of relays.<a href="#section-2-3.4.1" class="pilcrow">¶</a></p>
         <dd class="break"></dd>
 <dt id="section-2-3.5">Test Scenario:</dt>
         <dd style="margin-left: 1.5em" id="section-2-3.6">
-          <p id="section-2-3.6.1">A test scenario is a set of config profiles that are used to perform a series of tests to evaluate the performance
+          <p id="section-2-3.6.1">A test scenario is a set of config profiles that are used to perform a series of tests to evaluate the
+performance
 of relays.<a href="#section-2-3.6.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 <dt id="section-2-3.7">Relay:</dt>
         <dd style="margin-left: 1.5em" id="section-2-3.8">
-          <p id="section-2-3.8.1">A <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> relay is an intermediary that receives published media objects from publishers and forwards them to subscribers, providing fan-out distribution capabilities.<a href="#section-2-3.8.1" class="pilcrow">¶</a></p>
+          <p id="section-2-3.8.1">A <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> relay is an intermediary that receives published media objects from publishers and forwards
+them to subscribers, providing fan-out distribution capabilities.<a href="#section-2-3.8.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 <dt id="section-2-3.9">Publisher:</dt>
@@ -1330,12 +1393,14 @@ of relays.<a href="#section-2-3.6.1" class="pilcrow">¶</a></p>
         <dd class="break"></dd>
 <dt id="section-2-3.13">Track:</dt>
         <dd style="margin-left: 1.5em" id="section-2-3.14">
-          <p id="section-2-3.14.1">A sequence of related media objects identified by a namespace and track name, representing a single media stream such as audio or video.<a href="#section-2-3.14.1" class="pilcrow">¶</a></p>
+          <p id="section-2-3.14.1">A sequence of related media objects identified by a namespace and track name, representing a single
+media stream such as audio or video.<a href="#section-2-3.14.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 <dt id="section-2-3.15">Group:</dt>
         <dd style="margin-left: 1.5em" id="section-2-3.16">
-          <p id="section-2-3.16.1">A collection of related objects within a track that have dependencies on each other, typically used for video frames where objects within a group are interdependent.<a href="#section-2-3.16.1" class="pilcrow">¶</a></p>
+          <p id="section-2-3.16.1">A collection of related objects within a track that have dependencies on each other, typically used
+for video frames where objects within a group are interdependent.<a href="#section-2-3.16.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 <dt id="section-2-3.17">Object:</dt>
@@ -1372,12 +1437,17 @@ of relays.<a href="#section-2-3.6.1" class="pilcrow">¶</a></p>
         <h3 id="name-video-media">
 <a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-video-media" class="section-name selfRef">Video Media</a>
         </h3>
-<p id="section-3.1-1">Video media is a common <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> use case. A video media track typically begins with a large data object, followed by a series of smaller data objects within the same group. The initial object is often significantly larger than the subsequent ones. Video is transmitted at regular intervals (e.g., every 33 ms for 30 fps), producing a bursty fan‑out pattern at each interval. Each data object commonly carries at least three extension
+<p id="section-3.1-1">Video media is a common <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> use case. A video media track typically begins with a large data object,
+followed by a series of smaller data objects within the same group. The initial object is often
+significantly larger than the subsequent ones. Video is transmitted at regular intervals
+(e.g., every 33 ms for 30 fps), producing a bursty fan-out pattern at each interval. Each data object
+commonly carries at least three extension
 headers.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
 <p id="section-3.1-2">Video has a direct dependency on previous objects within a group. If objects are lost in a group, it breaks
 the ability to render the video correctly.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
 <p id="section-3.1-3">Video is often larger than MTU and cannot be transmitted as
-defined in <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> using datagram. Unless video is very low quality, video uses <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span> stream forwarding instead of datagram forwarding.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
+defined in <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> using datagram. Unless video is very low quality, video uses <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span> stream forwarding
+instead of datagram forwarding.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="audio-media">
@@ -1385,9 +1455,12 @@ defined in <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> using datag
         <h3 id="name-audio-media">
 <a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-audio-media" class="section-name selfRef">Audio Media</a>
         </h3>
-<p id="section-3.2-1">Audio media is a common <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> use case. An audio media track typically maintains fixed intervals with similarly sized data objects. Like video, transmission occurs at each interval, producing a periodic fan‑out burst. Each data object usually carries fewer than three extension headers.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.2-2"><span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> does not define how to handle larger than MTU sized data objects for <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span> datagrams.  Audio does not
-have the same requirement as video where subsequent data objects are related to the previous object or group.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
+<p id="section-3.2-1">Audio media is a common <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> use case. An audio media track typically maintains fixed intervals with
+similarly sized data objects. Like video, transmission occurs at each interval, producing a periodic fan-out
+burst. Each data object usually carries fewer than three extension headers.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.2-2"><span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> does not define how to handle larger than MTU sized data objects for <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span> datagrams.  Audio
+does not have the same requirement as video where subsequent data objects are related to the previous
+object or group.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
 <p id="section-3.2-3">Audio is a prime candidate for datagram considering the size of the data objects are less than MTU and
 there is no dependency on previous object within a group.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
 <p id="section-3.2-4">Audio primarily uses <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span> datagrams for forwarding.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
@@ -1409,9 +1482,12 @@ can receive it.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
         <h3 id="name-interactive-data">
 <a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-interactive-data" class="section-name selfRef">Interactive Data</a>
         </h3>
-<p id="section-3.4-1">Chat, metrics, and logging are use cases for interactive data. This data is sent based on interaction, such as a human typing a message or metrics event, or logging event.  A unique
-characteristic of this data is that it is sent when needed and isn't always constant. Metrics might be an exception where metrics are sent at a constant interval, but metrics may also be sent based on a triggered event.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
-<p id="section-3.4-2">Interactive data is often sent using <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span> streams but can also be sent via datagram considering the size of the data is often less than MTU size.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
+<p id="section-3.4-1">Chat, metrics, and logging are use cases for interactive data. This data is sent based on interaction,
+such as a human typing a message or metrics event, or logging event.  A unique
+characteristic of this data is that it is sent when needed and isn't always constant. Metrics might be
+an exception where metrics are sent at a constant interval, but metrics may also be sent based on a triggered event.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
+<p id="section-3.4-2">Interactive data is often sent using <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span> streams but can also be sent via datagram considering
+the size of the data is often less than MTU size.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="group-and-subgroup-impact-to-relays">
@@ -1419,7 +1495,10 @@ characteristic of this data is that it is sent when needed and isn't always cons
         <h3 id="name-group-and-subgroup-impact-t">
 <a href="#section-3.5" class="section-number selfRef">3.5. </a><a href="#name-group-and-subgroup-impact-t" class="section-name selfRef">Group and Subgroup Impact to Relays</a>
         </h3>
-<p id="section-3.5-1">In <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span>, when a group or subgroup changes a <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span> stream is created for the group/subgroup.  This results in additional state for the <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> relay implementation to handle multiple groups/subgroups in-flight.  The data transmission use case drives how frequently groups/subgroups change, which can impact the performance of relays. Changing of group/subgroup is only impactful with <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> stream tracks.<a href="#section-3.5-1" class="pilcrow">¶</a></p>
+<p id="section-3.5-1">In <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span>, when a group or subgroup changes a <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span> stream is created for the group/subgroup.
+This results in additional state for the <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> relay implementation to handle multiple groups/subgroups in-flight.
+The data transmission use case drives how frequently groups/subgroups change, which can impact the performance
+of relays. Changing of group/subgroup is only impactful with <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> stream tracks.<a href="#section-3.5-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1429,270 +1508,229 @@ characteristic of this data is that it is sent when needed and isn't always cons
       <h2 id="name-scenarios">
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-scenarios" class="section-name selfRef">Scenarios</a>
       </h2>
-<p id="section-4-1">A combination of data patterns are used to define a scenario. The scenario becomes a Config Profile. Various data patterns are combined to define a scenario. The scenario (Config Profile)
+<p id="section-4-1">A combination of data patterns are used to define a scenario. The scenario becomes a Config Profile. Various
+data patterns are combined to define a scenario. The scenario (Config Profile)
 is used to benchmark a relay.<a href="#section-4-1" class="pilcrow">¶</a></p>
 <p id="section-4-2">Below describes common scenarios that the benchmark and configuration profiles need to support.
 Other scenarios can be defined as needed using the configuration profiles.<a href="#section-4-2" class="pilcrow">¶</a></p>
-<div id="single-publisher-to-multiple-subscribers-audio">
+<div id="scenario-1-single-publisher-to-multiple-subscribers-audio">
 <section id="section-4.1">
-        <h3 id="name-single-publisher-to-multipl">
-<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-single-publisher-to-multipl" class="section-name selfRef">Single Publisher to Multiple Subscribers - Audio</a>
+        <h3 id="name-scenario-1-single-publisher">
+<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-scenario-1-single-publisher" class="section-name selfRef">Scenario 1: Single Publisher to Multiple Subscribers - Audio</a>
         </h3>
 <div id="section-4.1-1">
           <div class="alignCenter art-svg artwork" id="section-4.1-1.1">
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="256" width="448" viewBox="0 0 448 256" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+              <path d="M 8,208 L 8,240" fill="none" stroke="black"></path>
+              <path d="M 72,144 L 72,200" fill="none" stroke="black"></path>
+              <path d="M 128,208 L 128,240" fill="none" stroke="black"></path>
+              <path d="M 160,32 L 160,64" fill="none" stroke="black"></path>
+              <path d="M 168,208 L 168,240" fill="none" stroke="black"></path>
+              <path d="M 184,128 L 184,160" fill="none" stroke="black"></path>
+              <path d="M 224,72 L 224,120" fill="none" stroke="black"></path>
+              <path d="M 224,168 L 224,200" fill="none" stroke="black"></path>
+              <path d="M 264,128 L 264,160" fill="none" stroke="black"></path>
+              <path d="M 280,32 L 280,64" fill="none" stroke="black"></path>
+              <path d="M 288,208 L 288,240" fill="none" stroke="black"></path>
+              <path d="M 320,208 L 320,240" fill="none" stroke="black"></path>
+              <path d="M 384,144 L 384,200" fill="none" stroke="black"></path>
+              <path d="M 440,208 L 440,240" fill="none" stroke="black"></path>
+              <path d="M 160,32 L 280,32" fill="none" stroke="black"></path>
+              <path d="M 160,64 L 280,64" fill="none" stroke="black"></path>
+              <path d="M 184,128 L 264,128" fill="none" stroke="black"></path>
+              <path d="M 72,144 L 176,144" fill="none" stroke="black"></path>
+              <path d="M 272,144 L 384,144" fill="none" stroke="black"></path>
+              <path d="M 184,160 L 264,160" fill="none" stroke="black"></path>
+              <path d="M 8,208 L 128,208" fill="none" stroke="black"></path>
+              <path d="M 168,208 L 288,208" fill="none" stroke="black"></path>
+              <path d="M 320,208 L 440,208" fill="none" stroke="black"></path>
+              <path d="M 8,240 L 128,240" fill="none" stroke="black"></path>
+              <path d="M 168,240 L 288,240" fill="none" stroke="black"></path>
+              <path d="M 320,240 L 440,240" fill="none" stroke="black"></path>
+              <polygon class="arrowhead" points="392,200 380,194.4 380,205.6" fill="black" transform="rotate(90,384,200)"></polygon>
+              <polygon class="arrowhead" points="232,200 220,194.4 220,205.6" fill="black" transform="rotate(90,224,200)"></polygon>
+              <polygon class="arrowhead" points="232,120 220,114.4 220,125.6" fill="black" transform="rotate(90,224,120)"></polygon>
+              <polygon class="arrowhead" points="80,200 68,194.4 68,205.6" fill="black" transform="rotate(90,72,200)"></polygon>
               <g class="text">
-                <text x="220" y="36">┌──────────────┐</text>
-                <text x="160" y="52">│</text>
                 <text x="224" y="52">Publisher</text>
-                <text x="280" y="52">│</text>
-                <text x="220" y="68">└──────────────┘</text>
-                <text x="224" y="84">│</text>
-                <text x="224" y="100">│</text>
-                <text x="224" y="116">▼</text>
-                <text x="224" y="132">┌─────────┐</text>
-                <text x="128" y="148">┌─────────────│</text>
                 <text x="224" y="148">Relay</text>
-                <text x="324" y="148">│──────────────┐</text>
-                <text x="72" y="164">│</text>
-                <text x="224" y="164">└─────────┘</text>
-                <text x="384" y="164">│</text>
-                <text x="72" y="180">│</text>
-                <text x="224" y="180">│</text>
-                <text x="384" y="180">│</text>
-                <text x="72" y="196">▼</text>
-                <text x="224" y="196">▼</text>
-                <text x="384" y="196">▼</text>
-                <text x="68" y="212">┌──────────────┐</text>
-                <text x="228" y="212">┌──────────────┐</text>
-                <text x="380" y="212">┌──────────────┐</text>
-                <text x="8" y="228">│</text>
                 <text x="60" y="228">Subscriber</text>
                 <text x="112" y="228">1</text>
-                <text x="128" y="228">│</text>
-                <text x="168" y="228">│</text>
                 <text x="220" y="228">Subscriber</text>
                 <text x="272" y="228">2</text>
-                <text x="288" y="228">│</text>
-                <text x="320" y="228">│</text>
                 <text x="372" y="228">Subscriber</text>
                 <text x="424" y="228">3</text>
-                <text x="440" y="228">│</text>
-                <text x="68" y="244">└──────────────┘</text>
-                <text x="228" y="244">└──────────────┘</text>
-                <text x="380" y="244">└──────────────┘</text>
               </g>
             </svg><a href="#section-4.1-1.1" class="pilcrow">¶</a>
 </div>
 </div>
 <p id="section-4.1-2">The above diagram shows a single publisher sending audio to multiple subscribers.<a href="#section-4.1-2" class="pilcrow">¶</a></p>
-<p id="section-4.1-3">A single audio track is published using datagram. The audio track is sent at a constant interval that is then sent to all subscribers.  The benchmark is to see how many subscribers can be supported by the relay using datagram forwarding.<a href="#section-4.1-3" class="pilcrow">¶</a></p>
+<p id="section-4.1-3">A single audio track is published using datagram. The audio track is sent at a constant interval that is
+then sent to all subscribers.  The benchmark is to see how many subscribers can be supported by the relay
+using datagram forwarding.<a href="#section-4.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="single-publisher-to-multiple-subscribers-audio-and-video">
+<div id="scenario-2-single-publisher-to-multiple-subscribers-audio-and-video">
 <section id="section-4.2">
-        <h3 id="name-single-publisher-to-multiple">
-<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-single-publisher-to-multiple" class="section-name selfRef">Single Publisher to Multiple Subscribers - Audio and Video</a>
+        <h3 id="name-scenario-2-single-publisher">
+<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-scenario-2-single-publisher" class="section-name selfRef">Scenario 2: Single Publisher to Multiple Subscribers -  Audio and Video</a>
         </h3>
 <div id="section-4.2-1">
           <div class="alignCenter art-svg artwork" id="section-4.2-1.1">
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="256" width="448" viewBox="0 0 448 256" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+              <path d="M 8,208 L 8,240" fill="none" stroke="black"></path>
+              <path d="M 72,144 L 72,200" fill="none" stroke="black"></path>
+              <path d="M 128,208 L 128,240" fill="none" stroke="black"></path>
+              <path d="M 160,32 L 160,64" fill="none" stroke="black"></path>
+              <path d="M 168,208 L 168,240" fill="none" stroke="black"></path>
+              <path d="M 184,128 L 184,160" fill="none" stroke="black"></path>
+              <path d="M 224,72 L 224,120" fill="none" stroke="black"></path>
+              <path d="M 224,168 L 224,200" fill="none" stroke="black"></path>
+              <path d="M 264,128 L 264,160" fill="none" stroke="black"></path>
+              <path d="M 280,32 L 280,64" fill="none" stroke="black"></path>
+              <path d="M 288,208 L 288,240" fill="none" stroke="black"></path>
+              <path d="M 320,208 L 320,240" fill="none" stroke="black"></path>
+              <path d="M 384,144 L 384,200" fill="none" stroke="black"></path>
+              <path d="M 440,208 L 440,240" fill="none" stroke="black"></path>
+              <path d="M 160,32 L 280,32" fill="none" stroke="black"></path>
+              <path d="M 160,64 L 280,64" fill="none" stroke="black"></path>
+              <path d="M 184,128 L 264,128" fill="none" stroke="black"></path>
+              <path d="M 72,144 L 176,144" fill="none" stroke="black"></path>
+              <path d="M 272,144 L 384,144" fill="none" stroke="black"></path>
+              <path d="M 184,160 L 264,160" fill="none" stroke="black"></path>
+              <path d="M 8,208 L 128,208" fill="none" stroke="black"></path>
+              <path d="M 168,208 L 288,208" fill="none" stroke="black"></path>
+              <path d="M 320,208 L 440,208" fill="none" stroke="black"></path>
+              <path d="M 8,240 L 128,240" fill="none" stroke="black"></path>
+              <path d="M 168,240 L 288,240" fill="none" stroke="black"></path>
+              <path d="M 320,240 L 440,240" fill="none" stroke="black"></path>
+              <polygon class="arrowhead" points="392,200 380,194.4 380,205.6" fill="black" transform="rotate(90,384,200)"></polygon>
+              <polygon class="arrowhead" points="232,200 220,194.4 220,205.6" fill="black" transform="rotate(90,224,200)"></polygon>
+              <polygon class="arrowhead" points="232,120 220,114.4 220,125.6" fill="black" transform="rotate(90,224,120)"></polygon>
+              <polygon class="arrowhead" points="80,200 68,194.4 68,205.6" fill="black" transform="rotate(90,72,200)"></polygon>
               <g class="text">
-                <text x="220" y="36">┌──────────────┐</text>
-                <text x="160" y="52">│</text>
                 <text x="224" y="52">Publisher</text>
-                <text x="280" y="52">│</text>
-                <text x="220" y="68">└──────────────┘</text>
-                <text x="224" y="84">│</text>
-                <text x="224" y="100">│</text>
-                <text x="224" y="116">▼</text>
-                <text x="224" y="132">┌─────────┐</text>
-                <text x="128" y="148">┌─────────────│</text>
                 <text x="224" y="148">Relay</text>
-                <text x="324" y="148">│──────────────┐</text>
-                <text x="72" y="164">│</text>
-                <text x="224" y="164">└─────────┘</text>
-                <text x="384" y="164">│</text>
-                <text x="72" y="180">│</text>
-                <text x="224" y="180">│</text>
-                <text x="384" y="180">│</text>
-                <text x="72" y="196">▼</text>
-                <text x="224" y="196">▼</text>
-                <text x="384" y="196">▼</text>
-                <text x="68" y="212">┌──────────────┐</text>
-                <text x="228" y="212">┌──────────────┐</text>
-                <text x="380" y="212">┌──────────────┐</text>
-                <text x="8" y="228">│</text>
                 <text x="60" y="228">Subscriber</text>
                 <text x="112" y="228">1</text>
-                <text x="128" y="228">│</text>
-                <text x="168" y="228">│</text>
                 <text x="220" y="228">Subscriber</text>
                 <text x="272" y="228">2</text>
-                <text x="288" y="228">│</text>
-                <text x="320" y="228">│</text>
                 <text x="372" y="228">Subscriber</text>
                 <text x="424" y="228">3</text>
-                <text x="440" y="228">│</text>
-                <text x="68" y="244">└──────────────┘</text>
-                <text x="228" y="244">└──────────────┘</text>
-                <text x="380" y="244">└──────────────┘</text>
               </g>
             </svg><a href="#section-4.2-1.1" class="pilcrow">¶</a>
 </div>
 </div>
 <p id="section-4.2-2">The above diagram shows a single publisher sending audio and video to multiple subscribers.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
-<p id="section-4.2-3">Two tracks are published, an audio datagram track and a reliable stream track for video. The benchmark is to see how many subscribers can be supported by the relay using both datagram and
+<p id="section-4.2-3">Two tracks are published, an audio datagram track and a reliable stream track for video. The benchmark is to see
+how many subscribers can be supported by the relay using both datagram and
 stream forwarding tracks.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="groups-of-publishers-and-subscribers-aka-meeting">
+<div id="scenario-3-groups-of-publishers-and-subscribers-aka-meeting">
 <section id="section-4.3">
-        <h3 id="name-groups-of-publishers-and-su">
-<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-groups-of-publishers-and-su" class="section-name selfRef">Groups of Publishers and Subscribers (aka Meeting)</a>
+        <h3 id="name-scenario-3-groups-of-publis">
+<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-scenario-3-groups-of-publis" class="section-name selfRef">Scenario 3: Groups of Publishers and Subscribers (aka Meeting)</a>
         </h3>
 <div id="section-4.3-1">
           <div class="alignCenter art-svg artwork" id="section-4.3-1.1">
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="480" width="448" viewBox="0 0 448 480" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="464" width="448" viewBox="0 0 448 464" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+              <path d="M 8,32 L 8,160" fill="none" stroke="black"></path>
+              <path d="M 8,320 L 8,448" fill="none" stroke="black"></path>
+              <path d="M 24,80 L 24,128" fill="none" stroke="black"></path>
+              <path d="M 24,352 L 24,400" fill="none" stroke="black"></path>
+              <path d="M 88,128 L 88,352" fill="none" stroke="black"></path>
+              <path d="M 144,80 L 144,128" fill="none" stroke="black"></path>
+              <path d="M 144,352 L 144,400" fill="none" stroke="black"></path>
+              <path d="M 160,80 L 160,128" fill="none" stroke="black"></path>
+              <path d="M 160,224 L 160,256" fill="none" stroke="black"></path>
+              <path d="M 160,352 L 160,400" fill="none" stroke="black"></path>
+              <path d="M 216,128 L 216,224" fill="none" stroke="black"></path>
+              <path d="M 216,256 L 216,352" fill="none" stroke="black"></path>
+              <path d="M 280,80 L 280,128" fill="none" stroke="black"></path>
+              <path d="M 280,224 L 280,256" fill="none" stroke="black"></path>
+              <path d="M 280,352 L 280,400" fill="none" stroke="black"></path>
+              <path d="M 296,80 L 296,128" fill="none" stroke="black"></path>
+              <path d="M 296,352 L 296,400" fill="none" stroke="black"></path>
+              <path d="M 352,128 L 352,352" fill="none" stroke="black"></path>
+              <path d="M 416,80 L 416,128" fill="none" stroke="black"></path>
+              <path d="M 416,352 L 416,400" fill="none" stroke="black"></path>
+              <path d="M 440,32 L 440,160" fill="none" stroke="black"></path>
+              <path d="M 440,320 L 440,448" fill="none" stroke="black"></path>
+              <path d="M 8,32 L 440,32" fill="none" stroke="black"></path>
+              <path d="M 24,80 L 144,80" fill="none" stroke="black"></path>
+              <path d="M 160,80 L 280,80" fill="none" stroke="black"></path>
+              <path d="M 296,80 L 416,80" fill="none" stroke="black"></path>
+              <path d="M 24,128 L 80,128" fill="none" stroke="black"></path>
+              <path d="M 96,128 L 144,128" fill="none" stroke="black"></path>
+              <path d="M 160,128 L 208,128" fill="none" stroke="black"></path>
+              <path d="M 224,128 L 280,128" fill="none" stroke="black"></path>
+              <path d="M 296,128 L 344,128" fill="none" stroke="black"></path>
+              <path d="M 360,128 L 416,128" fill="none" stroke="black"></path>
+              <path d="M 8,160 L 440,160" fill="none" stroke="black"></path>
+              <path d="M 160,224 L 280,224" fill="none" stroke="black"></path>
+              <path d="M 88,240 L 160,240" fill="none" stroke="black"></path>
+              <path d="M 280,240 L 352,240" fill="none" stroke="black"></path>
+              <path d="M 160,256 L 280,256" fill="none" stroke="black"></path>
+              <path d="M 8,320 L 440,320" fill="none" stroke="black"></path>
+              <path d="M 24,352 L 80,352" fill="none" stroke="black"></path>
+              <path d="M 96,352 L 144,352" fill="none" stroke="black"></path>
+              <path d="M 160,352 L 208,352" fill="none" stroke="black"></path>
+              <path d="M 224,352 L 280,352" fill="none" stroke="black"></path>
+              <path d="M 296,352 L 344,352" fill="none" stroke="black"></path>
+              <path d="M 360,352 L 416,352" fill="none" stroke="black"></path>
+              <path d="M 24,400 L 144,400" fill="none" stroke="black"></path>
+              <path d="M 160,400 L 280,400" fill="none" stroke="black"></path>
+              <path d="M 296,400 L 416,400" fill="none" stroke="black"></path>
+              <path d="M 8,448 L 440,448" fill="none" stroke="black"></path>
+              <polygon class="arrowhead" points="360,352 348,346.4 348,357.6" fill="black" transform="rotate(90,352,352)"></polygon>
+              <polygon class="arrowhead" points="360,128 348,122.4 348,133.6" fill="black" transform="rotate(270,352,128)"></polygon>
+              <polygon class="arrowhead" points="224,352 212,346.4 212,357.6" fill="black" transform="rotate(90,216,352)"></polygon>
+              <polygon class="arrowhead" points="224,128 212,122.4 212,133.6" fill="black" transform="rotate(270,216,128)"></polygon>
+              <polygon class="arrowhead" points="96,352 84,346.4 84,357.6" fill="black" transform="rotate(90,88,352)"></polygon>
+              <polygon class="arrowhead" points="96,128 84,122.4 84,133.6" fill="black" transform="rotate(270,88,128)"></polygon>
               <g class="text">
-                <text x="224" y="36">┌─────────────────────────────────────────────────────┐</text>
-                <text x="8" y="52">│</text>
                 <text x="56" y="52">namespace</text>
                 <text x="104" y="52">=</text>
                 <text x="148" y="52">meeting,</text>
                 <text x="204" y="52">1234</text>
-                <text x="440" y="52">│</text>
-                <text x="8" y="68">│</text>
-                <text x="440" y="68">│</text>
-                <text x="8" y="84">│</text>
-                <text x="84" y="84">┌──────────────┐</text>
-                <text x="220" y="84">┌──────────────┐</text>
-                <text x="356" y="84">┌──────────────┐</text>
-                <text x="440" y="84">│</text>
-                <text x="8" y="100">│</text>
-                <text x="24" y="100">│</text>
                 <text x="72" y="100">Publisher</text>
                 <text x="120" y="100">1</text>
-                <text x="144" y="100">│</text>
-                <text x="160" y="100">│</text>
                 <text x="208" y="100">Publisher</text>
                 <text x="256" y="100">2</text>
-                <text x="280" y="100">│</text>
-                <text x="296" y="100">│</text>
                 <text x="344" y="100">Publisher</text>
                 <text x="392" y="100">3</text>
-                <text x="416" y="100">│</text>
-                <text x="440" y="100">│</text>
-                <text x="8" y="116">│</text>
-                <text x="24" y="116">│</text>
                 <text x="76" y="116">Subscriber</text>
                 <text x="128" y="116">1</text>
-                <text x="144" y="116">│</text>
-                <text x="160" y="116">│</text>
                 <text x="212" y="116">Subscriber</text>
                 <text x="264" y="116">2</text>
-                <text x="280" y="116">│</text>
-                <text x="296" y="116">│</text>
                 <text x="348" y="116">Subscriber</text>
                 <text x="400" y="116">3</text>
-                <text x="416" y="116">│</text>
-                <text x="440" y="116">│</text>
-                <text x="8" y="132">│</text>
-                <text x="84" y="132">└───────▲──────┘</text>
-                <text x="220" y="132">└──────▲───────┘</text>
-                <text x="356" y="132">└──────▲───────┘</text>
-                <text x="440" y="132">│</text>
-                <text x="8" y="148">│</text>
-                <text x="88" y="148">│</text>
-                <text x="216" y="148">│</text>
-                <text x="352" y="148">│</text>
-                <text x="440" y="148">│</text>
-                <text x="224" y="164">└─────────┼───────────────┼────────────────┼──────────┘</text>
-                <text x="88" y="180">│</text>
-                <text x="216" y="180">│</text>
-                <text x="352" y="180">│</text>
-                <text x="88" y="196">│</text>
-                <text x="216" y="196">│</text>
-                <text x="352" y="196">│</text>
-                <text x="88" y="212">│</text>
-                <text x="216" y="212">│</text>
-                <text x="352" y="212">│</text>
-                <text x="88" y="228">│</text>
-                <text x="220" y="228">┌──────┴───────┐</text>
-                <text x="352" y="228">│</text>
-                <text x="124" y="244">├────────┤</text>
                 <text x="216" y="244">Relay</text>
-                <text x="316" y="244">├────────┤</text>
-                <text x="88" y="260">│</text>
-                <text x="220" y="260">└──────┬───────┘</text>
-                <text x="352" y="260">│</text>
-                <text x="88" y="276">│</text>
-                <text x="216" y="276">│</text>
-                <text x="352" y="276">│</text>
-                <text x="88" y="292">│</text>
-                <text x="216" y="292">│</text>
-                <text x="352" y="292">│</text>
-                <text x="88" y="308">│</text>
-                <text x="216" y="308">│</text>
-                <text x="352" y="308">│</text>
-                <text x="224" y="324">┌─────────┼───────────────┼────────────────┼──────────┐</text>
-                <text x="8" y="340">│</text>
-                <text x="88" y="340">│</text>
-                <text x="216" y="340">│</text>
-                <text x="352" y="340">│</text>
-                <text x="440" y="340">│</text>
-                <text x="8" y="356">│</text>
-                <text x="84" y="356">┌───────▼──────┐</text>
-                <text x="220" y="356">┌──────▼───────┐</text>
-                <text x="356" y="356">┌──────▼───────┐</text>
-                <text x="440" y="356">│</text>
-                <text x="8" y="372">│</text>
-                <text x="24" y="372">│</text>
                 <text x="72" y="372">Publisher</text>
                 <text x="120" y="372">1</text>
-                <text x="144" y="372">│</text>
-                <text x="160" y="372">│</text>
                 <text x="208" y="372">Publisher</text>
                 <text x="256" y="372">2</text>
-                <text x="280" y="372">│</text>
-                <text x="296" y="372">│</text>
                 <text x="344" y="372">Publisher</text>
                 <text x="392" y="372">3</text>
-                <text x="416" y="372">│</text>
-                <text x="440" y="372">│</text>
-                <text x="8" y="388">│</text>
-                <text x="24" y="388">│</text>
                 <text x="76" y="388">Subscriber</text>
                 <text x="128" y="388">1</text>
-                <text x="144" y="388">│</text>
-                <text x="160" y="388">│</text>
                 <text x="212" y="388">Subscriber</text>
                 <text x="264" y="388">2</text>
-                <text x="280" y="388">│</text>
-                <text x="296" y="388">│</text>
                 <text x="348" y="388">Subscriber</text>
                 <text x="400" y="388">3</text>
-                <text x="416" y="388">│</text>
-                <text x="440" y="388">│</text>
-                <text x="8" y="404">│</text>
-                <text x="84" y="404">└──────────────┘</text>
-                <text x="220" y="404">└──────────────┘</text>
-                <text x="356" y="404">└──────────────┘</text>
-                <text x="440" y="404">│</text>
-                <text x="8" y="420">│</text>
-                <text x="440" y="420">│</text>
-                <text x="8" y="436">│</text>
                 <text x="56" y="436">namespace</text>
                 <text x="104" y="436">=</text>
                 <text x="148" y="436">meeting,</text>
                 <text x="204" y="436">5678</text>
-                <text x="440" y="436">│</text>
-                <text x="224" y="452">└─────────────────────────────────────────────────────┘</text>
               </g>
             </svg><a href="#section-4.3-1.1" class="pilcrow">¶</a>
 </div>
 </div>
-<p id="section-4.3-2">The above diagram shows a set of publishers and subscribers. Each client in this scenario publishes two tracks, audio and video, and subscribe to the other subscribers audio and video tracks.  In this scenario, the set of publishers and subscribers mimic a video conference meeting.  The benchmark is to see how many sets (aka meetings) can be supported by the relay using datagram and stream forwarding tracks.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
+<p id="section-4.3-2">The above diagram shows a set of publishers and subscribers. Each client in this scenario publishes two tracks,
+audio and video, and subscribe to the other subscribers audio and video tracks.  In this scenario, the set of
+publishers and subscribers mimic a video conference meeting.  The benchmark is to see how many sets (aka meetings)
+can be supported by the relay using datagram and stream forwarding tracks.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1771,8 +1809,11 @@ stream forwarding tracks.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
           </tbody>
         </table>
 <p id="section-5.1-3">Interpolation can be used to template the configuration profile.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
-<p id="section-5.1-4">Upon start, the track will start off with <code>"First Object Size"</code> of data bytes.  Subsequent objects will use the <code>Remaining Object Size</code> in bytes. The remaining objects sent will be
-<code>Objects Per Group</code> number minus the first object. For example, if <code>Objects Per Group</code> is 10 and <code>First Object Size</code> is 100 bytes and <code>Remaining Object Size</code> is 50 bytes, then the first group will be 100 bytes and the remaining 9 groups will be 50 bytes each.<a href="#section-5.1-4" class="pilcrow">¶</a></p>
+<p id="section-5.1-4">Upon start, the track will start off with <code>"First Object Size"</code> of data bytes.  Subsequent objects will use the
+<code>Remaining Object Size</code> in bytes. The remaining objects sent will be <code>Objects Per Group</code> number minus the
+first object. For example, if <code>Objects Per Group</code> is 10 and <code>First Object Size</code> is 100 bytes and
+<code>Remaining Object Size</code> is 50 bytes, then the first group will be 100 bytes and the remaining 9
+groups will be 50 bytes each.<a href="#section-5.1-4" class="pilcrow">¶</a></p>
 <p id="section-5.1-5">Groups value will increment based on sending <code>Objects Per Group</code> number of objects. TTL is used
 to define how long published objects should remain in the transmit queue.<a href="#section-5.1-5" class="pilcrow">¶</a></p>
 <p id="section-5.1-6">Objects will be published at the <code>Interval</code> value.<a href="#section-5.1-6" class="pilcrow">¶</a></p>
@@ -1784,11 +1825,18 @@ to define how long published objects should remain in the transmit queue.<a href
         <h3 id="name-synchronize-start-of-benchm">
 <a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-synchronize-start-of-benchm" class="section-name selfRef">Synchronize Start of Benchmark</a>
         </h3>
-<p id="section-5.2-1">Synchronization of the benchmark is required to ensure that all clients start at the same time as the publisher so that objects published can be compared to objects received.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
-<p id="section-5.2-2">To synchronize the start of the benchmark, the publisher will publish a start message (<a href="#start-message" class="auto internal xref">Section 5.4.1</a>) repeatedly for the duration of <code>Start Delay</code> value in milliseconds. The start message will be published every every 1/10th interval of the <code>Start Delay</code> value in milliseconds. If 1/10th is less than 100ms, the start message will be published every 100ms.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
-<p id="section-5.2-3">Clients will subscribe to the published track and will wait for the start message (<a href="#start-message" class="auto internal xref">Section 5.4.1</a>) to be received. If the start message is not received before data messages or completion message,
+<p id="section-5.2-1">Synchronization of the benchmark is required to ensure that all clients start at the same time as
+the publisher so that objects published can be compared to objects received.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+<p id="section-5.2-2">To synchronize the start of the benchmark, the publisher will publish a start message (<a href="#start-message" class="auto internal xref">Section 5.4.1</a>)
+repeatedly for the duration of <code>Start Delay</code> value in milliseconds. The start message will be published
+every every 1/10th interval of the <code>Start Delay</code> value in milliseconds. If 1/10th is less than 100ms,
+the start message will be published every 100ms.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
+<p id="section-5.2-3">Clients will subscribe to the published track and will wait for the start message (<a href="#start-message" class="auto internal xref">Section 5.4.1</a>)
+to be received. If the start message is not received before data messages or completion message,
 the track benchmark is considered failed.<a href="#section-5.2-3" class="pilcrow">¶</a></p>
-<p id="section-5.2-4">Clients will ignore the repeated start messages after receiving the first one. The test begins on the first data message (<a href="#data-message" class="auto internal xref">Section 5.4.2</a>) received. Start message <span class="bcp14">MUST</span> not be sent after sending the first data message message.<a href="#section-5.2-4" class="pilcrow">¶</a></p>
+<p id="section-5.2-4">Clients will ignore the repeated start messages after receiving the first one. The test begins on the
+first data message (<a href="#data-message" class="auto internal xref">Section 5.4.2</a>) received. Start message <span class="bcp14">MUST NOT</span> be sent after sending the
+first data message message.<a href="#section-5.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="completion-of-benchmark">
@@ -1796,7 +1844,8 @@ the track benchmark is considered failed.<a href="#section-5.2-3" class="pilcrow
         <h3 id="name-completion-of-benchmark">
 <a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-completion-of-benchmark" class="section-name selfRef">Completion of benchmark</a>
         </h3>
-<p id="section-5.3-1">The per track benchmark is completed when the publisher sends a completion message (<a href="#completion-message" class="auto internal xref">Section 5.4.3</a>). The completion message will be sent after the last data message (<a href="#data-message" class="auto internal xref">Section 5.4.2</a>) message is sent.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
+<p id="section-5.3-1">The per track benchmark is completed when the publisher sends a completion message (<a href="#completion-message" class="auto internal xref">Section 5.4.3</a>).
+The completion message will be sent after the last data message (<a href="#data-message" class="auto internal xref">Section 5.4.2</a>) message is sent.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="messages">
@@ -1844,8 +1893,10 @@ DATA Message {
 <span class="break"></span><dl class="dlParallel" id="section-5.4.2-2">
             <dt id="section-5.4.2-2.1">milliseconds_since_first_object:</dt>
             <dd style="margin-left: 1.5em" id="section-5.4.2-2.2">
-              <p id="section-5.4.2-2.2.1">Number of milliseconds since the first object was sent. The first object starts at zero and is incremented by milliseconds from the publisher for each message sent. The publisher adds the time when it
-sends the message. If there are publisher delays, then this time would reflect the delay variance from expected interval.<a href="#section-5.4.2-2.2.1" class="pilcrow">¶</a></p>
+              <p id="section-5.4.2-2.2.1">Number of milliseconds since the first object was sent. The first object starts at zero and is
+incremented by milliseconds from the publisher for each message sent. The publisher adds the time
+when it sends the message. If there are publisher delays, then this time would reflect the delay variance
+from expected interval.<a href="#section-5.4.2-2.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 </dl>
@@ -2003,126 +2054,132 @@ COMPLETION Message {
         <h3 id="name-running-benchmark">
 <a href="#section-5.6" class="section-number selfRef">5.6. </a><a href="#name-running-benchmark" class="section-name selfRef">Running Benchmark</a>
         </h3>
-<p id="section-5.6-1">Using a configuration profile, multiple instances of clients are ran to connect to the relay.  They will publish and subscribe based on the configuration profile.  Interpolation is used
-to dynamically modify the configuration profile namespace and name based on the test script. In the case of mode 3 (both), the namespace and name will be interpolated based on the test script
-to avoid multi-publisher and mirroring where the publisher subscribes to itself.<a href="#section-5.6-1" class="pilcrow">¶</a></p>
+<p id="section-5.6-1">Using a configuration profile, multiple instances of clients are ran to connect to the relay.  They will
+publish and subscribe based on the configuration profile.  Interpolation is used to dynamically modify the
+configuration profile namespace and name based on the test script. In the case of mode 3 (both), the
+namespace and name will be interpolated based on the test script to avoid multi-publisher and mirroring
+where the publisher subscribes to itself.<a href="#section-5.6-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-</section>
-</div>
-<div id="security">
-<section id="section-6">
-      <h2 id="name-security-considerations">
-<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
-      </h2>
-<p id="section-6-1">This document defines a benchmarking methodology and does not introduce new security vulnerabilities beyond those inherent in <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> and <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span>. However, the following security considerations apply when implementing and running benchmarks:<a href="#section-6-1" class="pilcrow">¶</a></p>
 <div id="test-environment-isolation">
-<section id="section-6.1">
+<section id="section-5.7">
         <h3 id="name-test-environment-isolation">
-<a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-test-environment-isolation" class="section-name selfRef">Test Environment Isolation</a>
+<a href="#section-5.7" class="section-number selfRef">5.7. </a><a href="#name-test-environment-isolation" class="section-name selfRef">Test Environment Isolation</a>
         </h3>
-<p id="section-6.1-1">Benchmarking should be conducted in isolated test environments to prevent:<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<p id="section-5.7-1">Benchmarking should be conducted in isolated test environments to prevent:<a href="#section-5.7-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-6.1-2.1">
-            <p id="section-6.1-2.1.1">Interference with production traffic<a href="#section-6.1-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-5.7-2.1">
+            <p id="section-5.7-2.1.1">Interference with production traffic<a href="#section-5.7-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-6.1-2.2">
-            <p id="section-6.1-2.2.1">Exposure of test data patterns to unauthorized parties<a href="#section-6.1-2.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.7-2.2">
+            <p id="section-5.7-2.2.1">Exposure of test data patterns to unauthorized parties<a href="#section-5.7-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-6.1-2.3">
-            <p id="section-6.1-2.3.1">Resource exhaustion attacks on production systems<a href="#section-6.1-2.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.7-2.3">
+            <p id="section-5.7-2.3.1">Resource exhaustion attacks on production systems<a href="#section-5.7-2.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="authentication-and-authorization">
-<section id="section-6.2">
+<section id="section-5.8">
         <h3 id="name-authentication-and-authoriz">
-<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-authentication-and-authoriz" class="section-name selfRef">Authentication and Authorization</a>
+<a href="#section-5.8" class="section-number selfRef">5.8. </a><a href="#name-authentication-and-authoriz" class="section-name selfRef">Authentication and Authorization</a>
         </h3>
-<p id="section-6.2-1">Benchmark implementations <span class="bcp14">SHOULD</span> implement proper authentication and authorization mechanisms to:<a href="#section-6.2-1" class="pilcrow">¶</a></p>
+<p id="section-5.8-1">Benchmark implementations <span class="bcp14">SHOULD</span> implement proper authentication and authorization mechanisms to:<a href="#section-5.8-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-6.2-2.1">
-            <p id="section-6.2-2.1.1">Prevent unauthorized participation in benchmark tests<a href="#section-6.2-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-5.8-2.1">
+            <p id="section-5.8-2.1.1">Prevent unauthorized participation in benchmark tests<a href="#section-5.8-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-6.2-2.2">
-            <p id="section-6.2-2.2.1">Ensure only authorized entities can initiate benchmark sessions<a href="#section-6.2-2.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.8-2.2">
+            <p id="section-5.8-2.2.1">Ensure only authorized entities can initiate benchmark sessions<a href="#section-5.8-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-6.2-2.3">
-            <p id="section-6.2-2.3.1">Protect against malicious clients that could skew results<a href="#section-6.2-2.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.8-2.3">
+            <p id="section-5.8-2.3.1">Protect against malicious clients that could skew results<a href="#section-5.8-2.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="resource-management">
-<section id="section-6.3">
+<section id="section-5.9">
         <h3 id="name-resource-management">
-<a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-resource-management" class="section-name selfRef">Resource Management</a>
+<a href="#section-5.9" class="section-number selfRef">5.9. </a><a href="#name-resource-management" class="section-name selfRef">Resource Management</a>
         </h3>
-<p id="section-6.3-1">Benchmark implementations <span class="bcp14">MUST</span> include safeguards to prevent:<a href="#section-6.3-1" class="pilcrow">¶</a></p>
+<p id="section-5.9-1">Benchmark implementations <span class="bcp14">MUST</span> include safeguards to prevent:<a href="#section-5.9-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-6.3-2.1">
-            <p id="section-6.3-2.1.1">Excessive resource consumption that could lead to denial of service<a href="#section-6.3-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-5.9-2.1">
+            <p id="section-5.9-2.1.1">Excessive resource consumption that could lead to denial of service<a href="#section-5.9-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-6.3-2.2">
-            <p id="section-6.3-2.2.1">Memory exhaustion from unbounded metric collection<a href="#section-6.3-2.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.9-2.2">
+            <p id="section-5.9-2.2.1">Memory exhaustion from unbounded metric collection<a href="#section-5.9-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-6.3-2.3">
-            <p id="section-6.3-2.3.1">CPU exhaustion from processing malformed benchmark messages<a href="#section-6.3-2.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.9-2.3">
+            <p id="section-5.9-2.3.1">CPU exhaustion from processing malformed benchmark messages<a href="#section-5.9-2.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="data-privacy">
-<section id="section-6.4">
+<section id="section-5.10">
         <h3 id="name-data-privacy">
-<a href="#section-6.4" class="section-number selfRef">6.4. </a><a href="#name-data-privacy" class="section-name selfRef">Data Privacy</a>
+<a href="#section-5.10" class="section-number selfRef">5.10. </a><a href="#name-data-privacy" class="section-name selfRef">Data Privacy</a>
         </h3>
-<p id="section-6.4-1">While benchmark data is typically synthetic, implementations <span class="bcp14">SHOULD</span>:<a href="#section-6.4-1" class="pilcrow">¶</a></p>
+<p id="section-5.10-1">While benchmark data is typically synthetic, implementations <span class="bcp14">SHOULD</span>:<a href="#section-5.10-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-6.4-2.1">
-            <p id="section-6.4-2.1.1">Avoid including sensitive information in test data<a href="#section-6.4-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-5.10-2.1">
+            <p id="section-5.10-2.1.1">Avoid including sensitive information in test data<a href="#section-5.10-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-6.4-2.2">
-            <p id="section-6.4-2.2.1">Provide mechanisms to sanitize benchmark results before sharing<a href="#section-6.4-2.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.10-2.2">
+            <p id="section-5.10-2.2.1">Provide mechanisms to sanitize benchmark results before sharing<a href="#section-5.10-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-6.4-2.3">
-            <p id="section-6.4-2.3.1">Consider the privacy implications of detailed performance metrics<a href="#section-6.4-2.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.10-2.3">
+            <p id="section-5.10-2.3.1">Consider the privacy implications of detailed performance metrics<a href="#section-5.10-2.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="implementation-security">
-<section id="section-6.5">
+<section id="section-5.11">
         <h3 id="name-implementation-security">
-<a href="#section-6.5" class="section-number selfRef">6.5. </a><a href="#name-implementation-security" class="section-name selfRef">Implementation Security</a>
+<a href="#section-5.11" class="section-number selfRef">5.11. </a><a href="#name-implementation-security" class="section-name selfRef">Implementation Security</a>
         </h3>
-<p id="section-6.5-1">Benchmark tools <span class="bcp14">MUST</span> follow secure coding practices and <span class="bcp14">SHOULD</span> undergo security review, as they may be deployed in sensitive network environments.<a href="#section-6.5-1" class="pilcrow">¶</a></p>
+<p id="section-5.11-1">Benchmark tools <span class="bcp14">MUST</span> follow secure coding practices and <span class="bcp14">SHOULD</span> undergo security review,
+as they may be deployed in sensitive network environments.<a href="#section-5.11-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
 </div>
 <div id="iana-considerations">
-<section id="section-7">
+<section id="section-6">
       <h2 id="name-iana-considerations">
-<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-7-1">This document does not require any IANA actions. The benchmarking methodology defined herein:<a href="#section-7-1" class="pilcrow">¶</a></p>
+<p id="section-6-1">This document does not require any IANA actions. The benchmarking methodology defined herein:<a href="#section-6-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-7-2.1">
-          <p id="section-7-2.1.1">Does not define new protocol elements that require IANA registration<a href="#section-7-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-6-2.1">
+          <p id="section-6-2.1.1">Does not define new protocol elements that require IANA registration<a href="#section-6-2.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-7-2.2">
-          <p id="section-7-2.2.1">Does not create new registries or modify existing ones<a href="#section-7-2.2.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-6-2.2">
+          <p id="section-6-2.2.1">Does not create new registries or modify existing ones<a href="#section-6-2.2.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-7-2.3">
-          <p id="section-7-2.3.1">Uses existing <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> and <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span> protocol mechanisms without extension<a href="#section-7-2.3.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-6-2.3">
+          <p id="section-6-2.3.1">Uses existing <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> and <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span> protocol mechanisms without extension<a href="#section-6-2.3.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-7-2.4">
-          <p id="section-7-2.4.1">Defines message formats for benchmarking purposes only, which are not part of the <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> protocol specification<a href="#section-7-2.4.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-6-2.4">
+          <p id="section-6-2.4.1">Defines message formats for benchmarking purposes only, which are not part of the <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> protocol specification<a href="#section-6-2.4.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-7-3">The message type values defined in this document (0x01, 0x02, 0x03) are used solely within the context of benchmarking implementations and do not conflict with or extend the <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> protocol message space.<a href="#section-7-3" class="pilcrow">¶</a></p>
+<p id="section-6-3">The message type values defined in this document (0x01, 0x02, 0x03) are used solely within the
+context of benchmarking implementations and do not conflict with or extend the <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> protocol message space.<a href="#section-6-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="security-considerations">
+<section id="section-7">
+      <h2 id="name-security-considerations">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+      </h2>
+<p id="section-7-1">This document defines a benchmarking methodology and does not introduce new security vulnerabilities beyond
+those inherent in <span>[<a href="#MOQT" class="cite xref">MOQT</a>]</span> and <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span>. However, the following security considerations apply when
+implementing and running benchmarks.<a href="#section-7-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-combined-references">
@@ -2166,8 +2223,219 @@ to avoid multi-publisher and mirroring where the publisher subscribes to itself.
 </div>
 </section>
 </div>
-<div id="authors-addresses">
+<div id="example-benchmark-results">
 <section id="appendix-A">
+      <h2 id="name-example-benchmark-results">
+<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-example-benchmark-results" class="section-name selfRef">Example Benchmark Results</a>
+      </h2>
+<p id="appendix-A-1">Below are example results from running benchmark against existing relays.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<div id="environment">
+<section id="appendix-A.1">
+        <h3 id="name-environment">
+<a href="#appendix-A.1" class="section-number selfRef">A.1. </a><a href="#name-environment" class="section-name selfRef">Environment</a>
+        </h3>
+<p id="appendix-A.1-1">Each benchmark test was using the same set of EC2 instances in AWS.  The publisher
+and relay ran on a one EC2 instance while the clients ran on one or more separate
+EC2 instances.<a href="#appendix-A.1-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-A.1-2.1">
+            <p id="appendix-A.1-2.1.1"><strong>EC2 Instance Type</strong>: c8g.2xlarge (Graviton4 ARM processors (2.7/2.8GHz), 8 cores, 16GB ram<a href="#appendix-A.1-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-A.1-2.2">
+            <p id="appendix-A.1-2.2.1"><strong>Networking</strong>: UP to 15Gbps. All instances on same VPC subnet and no NAT gateway was used<a href="#appendix-A.1-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+<div id="benchmark-tool">
+<section id="appendix-A.2">
+        <h3 id="name-benchmark-tool">
+<a href="#appendix-A.2" class="section-number selfRef">A.2. </a><a href="#name-benchmark-tool" class="section-name selfRef">Benchmark Tool</a>
+        </h3>
+<p id="appendix-A.2-1"><a href="https://github.com/quicr/qperf">qperf</a> benchmark implementation was used.<a href="#appendix-A.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="relays">
+<section id="appendix-A.3">
+        <h3 id="name-relays">
+<a href="#appendix-A.3" class="section-number selfRef">A.3. </a><a href="#name-relays" class="section-name selfRef">Relays</a>
+        </h3>
+<p id="appendix-A.3-1">Benchmark tests two open source relays using latest main branches on September 25th, 2025.<a href="#appendix-A.3-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-A.3-2.1">
+            <p id="appendix-A.3-2.1.1"><a href="https://github.com/quicr/laps">LAPS</a><a href="#appendix-A.3-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-A.3-2.2">
+            <p id="appendix-A.3-2.2.1"><a href="https://github.com/facebookexperimental/moxygen">Moxygen</a><a href="#appendix-A.3-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+<div id="scenario-1-single-publisher-audio">
+<section id="appendix-A.4">
+        <h3 id="name-scenario-1-single-publisher-">
+<a href="#appendix-A.4" class="section-number selfRef">A.4. </a><a href="#name-scenario-1-single-publisher-" class="section-name selfRef">Scenario 1: Single publisher audio</a>
+        </h3>
+<div id="config-profile-1">
+<section id="appendix-A.4.1">
+          <h4 id="name-config-profile-2">
+<a href="#appendix-A.4.1" class="section-number selfRef">A.4.1. </a><a href="#name-config-profile-2" class="section-name selfRef">Config Profile</a>
+          </h4>
+<div class="alignLeft art-text artwork" id="appendix-A.4.1-1">
+<pre>
+[Audio Datagram]
+namespace           = perf/audio/{} ; MAY be the same across tracks,
+                                    ; entries delimited by /
+name                = 1          ; SHOULD be unique to other tracks
+track_mode          = datagram   ; (datagram|stream)
+priority            = 2          ; (0-255)
+ttl                 = 5000       ; TTL in ms
+time_interval       = 20         ; transmit interval in floating
+                                 ; point ms
+objects_per_group   = 1          ; number of objects per group &gt;=1
+first_object_size   = 120        ; size in bytes of the first object
+                                 ; in a group
+object_size         = 120        ; size in bytes of remaining objects
+                                 ; in a group
+start_delay         = 5000       ; start delay in ms - after control
+                                 ; messages are sent and acknowledged
+total_transmit_time = 35000      ; total transmit time in ms,
+                                 ; including start delay
+</pre><a href="#appendix-A.4.1-1" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="results">
+<section id="appendix-A.4.2">
+          <h4 id="name-results">
+<a href="#appendix-A.4.2" class="section-number selfRef">A.4.2. </a><a href="#name-results" class="section-name selfRef">Results</a>
+          </h4>
+<span id="name-scenario-1-relay-results"></span><table class="center" id="table-4">
+            <caption>
+<a href="#table-4" class="selfRef">Table 4</a>:
+<a href="#name-scenario-1-relay-results" class="selfRef">Scenario 1 Relay Results</a>
+            </caption>
+<thead>
+              <tr>
+                <th class="text-left" rowspan="1" colspan="1">Relay</th>
+                <th class="text-left" rowspan="1" colspan="1">Number of Subscribers</th>
+                <th class="text-left" rowspan="1" colspan="1">Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">LAPS</td>
+                <td class="text-left" rowspan="1" colspan="1">2000</td>
+                <td class="text-left" rowspan="1" colspan="1">No dropped datagrams and CPU was under 95% on a single core</td>
+              </tr>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">Moxygen</td>
+                <td class="text-left" rowspan="1" colspan="1">1000</td>
+                <td class="text-left" rowspan="1" colspan="1">No dropped datagrams and CPU was under 95% on a single core</td>
+              </tr>
+            </tbody>
+          </table>
+</section>
+</div>
+</section>
+</div>
+<div id="scenario-2-single-publisher-audiovideo">
+<section id="appendix-A.5">
+        <h3 id="name-scenario-2-single-publisher-">
+<a href="#appendix-A.5" class="section-number selfRef">A.5. </a><a href="#name-scenario-2-single-publisher-" class="section-name selfRef">Scenario 2: Single publisher audio/video</a>
+        </h3>
+<div id="config-profile-2">
+<section id="appendix-A.5.1">
+          <h4 id="name-config-profile-3">
+<a href="#appendix-A.5.1" class="section-number selfRef">A.5.1. </a><a href="#name-config-profile-3" class="section-name selfRef">Config Profile</a>
+          </h4>
+<div class="alignLeft art-text artwork" id="appendix-A.5.1-1">
+<pre>
+[Audio Datagram]
+namespace          = perf/audio/{}  ; MAY be the same across tracks,
+                                 ; entries delimited by /
+name               = 1           ; SHOULD be unique to other tracks
+track_mode         = datagram    ; (datagram|stream)
+priority           = 2           ; (0-255)
+ttl                = 5000        ; TTL in ms
+time_interval      = 20          ; transmit interval in floating
+                                 ; point ms
+objects_per_group  = 1           ; number of objects per group &gt;=1
+first_object_size  = 120         ; size in bytes of the first
+                                 ; object in group
+object_size        = 120         ; size in bytes of remaining
+                                 ; objects in a group
+start_delay        = 5000        ; start delay in ms - after control
+                                 ; messages are sent and acknowledged
+total_transmit_time = 35000      ; total transmit time in ms
+
+[360p Video]
+namespace          = perf/video/{}  ; MAY be the same across tracks,
+                                    ; entries delimited by /
+name               = 1          ; SHOULD be unique to other tracks
+track_mode         = stream     ; (datagram|stream)
+priority           = 3          ; (0-255)
+ttl                = 5000       ; TTL in ms
+time_interval      = 33.33      ; transmit interval in floating
+                                ; point ms
+objects_per_group  = 150        ; number of objects per group &gt;=1
+first_object_size  = 21333      ; size in bytes of the first object
+                                ; in a group
+object_size        = 2666       ; size in bytes of remaining objects
+                                ; in a group
+start_delay        = 5000       ; start delay in ms - after control
+                                ; messages are sent and acknowledged
+total_transmit_time = 35000     ; total transmit time in ms
+</pre><a href="#appendix-A.5.1-1" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="results-1">
+<section id="appendix-A.5.2">
+          <h4 id="name-results-2">
+<a href="#appendix-A.5.2" class="section-number selfRef">A.5.2. </a><a href="#name-results-2" class="section-name selfRef">Results</a>
+          </h4>
+<span id="name-scenario-2-relay-results"></span><table class="center" id="table-5">
+            <caption>
+<a href="#table-5" class="selfRef">Table 5</a>:
+<a href="#name-scenario-2-relay-results" class="selfRef">Scenario 2 Relay Results</a>
+            </caption>
+<thead>
+              <tr>
+                <th class="text-left" rowspan="1" colspan="1">Relay</th>
+                <th class="text-left" rowspan="1" colspan="1">Number of Subscribers</th>
+                <th class="text-left" rowspan="1" colspan="1">Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">LAPS</td>
+                <td class="text-left" rowspan="1" colspan="1">1000</td>
+                <td class="text-left" rowspan="1" colspan="1">No dropped datagrams or stream data. CPU was under 95% on a single core</td>
+              </tr>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">Moxygen</td>
+                <td class="text-left" rowspan="1" colspan="1">250</td>
+                <td class="text-left" rowspan="1" colspan="1">Datagrams started to get lost after 250 and subscriptions started to close and fail after 250. CPU on a single core was less than 85%</td>
+              </tr>
+            </tbody>
+          </table>
+</section>
+</div>
+</section>
+</div>
+</section>
+</div>
+<div id="Acknowledgements">
+<section id="appendix-B">
+      <h2 id="name-acknowledgments">
+<a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
+      </h2>
+<p id="appendix-B-1">Thank you to Suhas Nandakumar for their reviews and suggestions.<a href="#appendix-B-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="authors-addresses">
+<section id="appendix-C">
       <h2 id="name-authors-addresses">
 <a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
       </h2>

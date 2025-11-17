@@ -5,8 +5,8 @@
 Media Over QUIC                                                 T. Evens
 Internet-Draft                                                 T. Rigaux
 Intended status: Standards Track                                   Cisco
-Expires: 9 May 2026                                           S. Henning
-                                                         5 November 2025
+Expires: 21 May 2026                                          S. Henning
+                                                        17 November 2025
 
 
               Media over QUIC Relay Benchmark Methodology
@@ -15,21 +15,20 @@ Expires: 9 May 2026                                           S. Henning
 Abstract
 
    This document defines a comprehensive methodology for benchmarking
-   Media over QUIC Transport ([MOQT]) relays to evaluate their
-   performance under realistic conditions.  The methodology utilizes
-   configurable test profiles that simulate common media streaming
-   scenarios including audio-only distribution, combined audio-video
-   streaming, and multi-participant conferencing environments.  The
-   framework defines standardized message formats, synchronization
-   mechanisms, and comprehensive metrics collection to ensure
-   reproducible and comparable results across different relay
-   implementations.  Test scenarios cover both [QUIC] datagram and
-   stream forwarding modes, enabling evaluation of relay performance
-   characteristics such as throughput, latency variance, object loss
-   rates, and resource utilization.  The resulting benchmark data
-   facilitates objective comparison and analysis of [MOQT] relay
-   implementations, supporting informed deployment decisions and
-   performance optimization efforts.
+   Media over QUIC Transport (MOQT) relays to evaluate their performance
+   under realistic conditions.  The methodology utilizes configurable
+   test profiles that simulate common media streaming scenarios
+   including audio-only distribution, combined audio-video streaming,
+   and multi-participant conferencing environments.  The framework
+   defines standardized message formats, synchronization mechanisms, and
+   comprehensive metrics collection to ensure reproducible and
+   comparable results across different relay implementations.  Test
+   scenarios cover both (QUIC) datagram and stream forwarding modes,
+   enabling evaluation of relay performance characteristics such as
+   throughput, latency variance, object loss rates, and resource
+   utilization.  The resulting benchmark data facilitates objective
+   comparison and analysis of (MOQT) relay implementations, supporting
+   informed deployment decisions and performance optimization efforts.
 
 About This Document
 
@@ -63,7 +62,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 May 2026.
+   This Internet-Draft will expire on 21 May 2026.
 
 Copyright Notice
 
@@ -90,9 +89,12 @@ Table of Contents
      3.4.  Interactive Data
      3.5.  Group and Subgroup Impact to Relays
    4.  Scenarios
-     4.1.  Single Publisher to Multiple Subscribers - Audio
-     4.2.  Single Publisher to Multiple Subscribers - Audio and Video
-     4.3.  Groups of Publishers and Subscribers (aka Meeting)
+     4.1.  Scenario 1: Single Publisher to Multiple Subscribers -
+           Audio
+     4.2.  Scenario 2: Single Publisher to Multiple Subscribers -
+           Audio and Video
+     4.3.  Scenario 3: Groups of Publishers and Subscribers (aka
+           Meeting)
    5.  Methodology
      5.1.  Config Profile
      5.2.  Synchronize Start of Benchmark
@@ -105,21 +107,32 @@ Table of Contents
        5.5.1.  While Track is in Progress
        5.5.2.  On completion of track
      5.6.  Running Benchmark
-   6.  Security Considerations
-     6.1.  Test Environment Isolation
-     6.2.  Authentication and Authorization
-     6.3.  Resource Management
-     6.4.  Data Privacy
-     6.5.  Implementation Security
-   7.  IANA Considerations
+     5.7.  Test Environment Isolation
+     5.8.  Authentication and Authorization
+     5.9.  Resource Management
+     5.10. Data Privacy
+     5.11. Implementation Security
+   6.  IANA Considerations
+   7.  Security Considerations
    8.  References
      8.1.  Normative References
      8.2.  Informative References
+   Appendix A.  Example Benchmark Results
+     A.1.  Environment
+     A.2.  Benchmark Tool
+     A.3.  Relays
+     A.4.  Scenario 1: Single publisher audio
+       A.4.1.  Config Profile
+       A.4.2.  Results
+     A.5.  Scenario 2: Single publisher audio/video
+       A.5.1.  Config Profile
+       A.5.2.  Results
+   Acknowledgments
    Authors' Addresses
 
 1.  Introduction
 
-   [MOQT] specifies the client–server interactions and messaging used by
+   [MOQT] specifies the client-server interactions and messaging used by
    clients and relays to fan-out published data to one or more
    subscribers.  Implementations employ several state machines to
    coordinate these interactions.  Relays must serialize and deserialize
@@ -267,22 +280,22 @@ Table of Contents
    profiles need to support.  Other scenarios can be defined as needed
    using the configuration profiles.
 
-4.1.  Single Publisher to Multiple Subscribers - Audio
+4.1.  Scenario 1: Single Publisher to Multiple Subscribers - Audio
 
-                             ┌──────────────┐
-                             │   Publisher  │
-                             └──────────────┘
-                                     │
-                                     │
-                                     ▼
-                                ┌─────────┐
-                  ┌─────────────│  Relay  │──────────────┐
-                  │             └─────────┘              │
-                  │                  │                   │
-                  ▼                  ▼                   ▼
-          ┌──────────────┐    ┌──────────────┐   ┌──────────────┐
-          │ Subscriber 1 │    │ Subscriber 2 │   │ Subscriber 3 │
-          └──────────────┘    └──────────────┘   └──────────────┘
+                             +--------------+
+                             |   Publisher  |
+                             +--------------+
+                                     |
+                                     |
+                                     v
+                                +---------+
+                  +-------------|  Relay  |--------------+
+                  |             +---------+              |
+                  |                  |                   |
+                  v                  v                   v
+          +--------------+    +--------------+   +--------------+
+          | Subscriber 1 |    | Subscriber 2 |   | Subscriber 3 |
+          +--------------+    +--------------+   +--------------+
 
    The above diagram shows a single publisher sending audio to multiple
    subscribers.
@@ -292,22 +305,23 @@ Table of Contents
    The benchmark is to see how many subscribers can be supported by the
    relay using datagram forwarding.
 
-4.2.  Single Publisher to Multiple Subscribers - Audio and Video
+4.2.  Scenario 2: Single Publisher to Multiple Subscribers - Audio and
+      Video
 
-                             ┌──────────────┐
-                             │   Publisher  │
-                             └──────────────┘
-                                     │
-                                     │
-                                     ▼
-                                ┌─────────┐
-                  ┌─────────────│  Relay  │──────────────┐
-                  │             └─────────┘              │
-                  │                  │                   │
-                  ▼                  ▼                   ▼
-          ┌──────────────┐    ┌──────────────┐   ┌──────────────┐
-          │ Subscriber 1 │    │ Subscriber 2 │   │ Subscriber 3 │
-          └──────────────┘    └──────────────┘   └──────────────┘
+                             +--------------+
+                             |   Publisher  |
+                             +--------------+
+                                     |
+                                     |
+                                     v
+                                +---------+
+                  +-------------|  Relay  |--------------+
+                  |             +---------+              |
+                  |                  |                   |
+                  v                  v                   v
+          +--------------+    +--------------+   +--------------+
+          | Subscriber 1 |    | Subscriber 2 |   | Subscriber 3 |
+          +--------------+    +--------------+   +--------------+
 
    The above diagram shows a single publisher sending audio and video to
    multiple subscribers.
@@ -317,35 +331,35 @@ Table of Contents
    can be supported by the relay using both datagram and stream
    forwarding tracks.
 
-4.3.  Groups of Publishers and Subscribers (aka Meeting)
+4.3.  Scenario 3: Groups of Publishers and Subscribers (aka Meeting)
 
-           ┌─────────────────────────────────────────────────────┐
-           │ namespace = meeting, 1234                           │
-           │                                                     │
-           │ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐  │
-           │ │ Publisher 1  │ │ Publisher 2  │ │ Publisher 3  │  │
-           │ │ Subscriber 1 │ │ Subscriber 2 │ │ Subscriber 3 │  │
-           │ └───────▲──────┘ └──────▲───────┘ └──────▲───────┘  │
-           │         │               │                │          │
-           └─────────┼───────────────┼────────────────┼──────────┘
-                     │               │                │
-                     │               │                │
-                     │               │                │
-                     │        ┌──────┴───────┐        │
-                     ├────────┤    Relay     ├────────┤
-                     │        └──────┬───────┘        │
-                     │               │                │
-                     │               │                │
-                     │               │                │
-           ┌─────────┼───────────────┼────────────────┼──────────┐
-           │         │               │                │          │
-           │ ┌───────▼──────┐ ┌──────▼───────┐ ┌──────▼───────┐  │
-           │ │ Publisher 1  │ │ Publisher 2  │ │ Publisher 3  │  │
-           │ │ Subscriber 1 │ │ Subscriber 2 │ │ Subscriber 3 │  │
-           │ └──────────────┘ └──────────────┘ └──────────────┘  │
-           │                                                     │
-           │ namespace = meeting, 5678                           │
-           └─────────────────────────────────────────────────────┘
+          +-----------------------------------------------------+
+          | namespace = meeting, 1234                           |
+          |                                                     |
+          | +--------------+ +--------------+ +--------------+  |
+          | | Publisher 1  | | Publisher 2  | | Publisher 3  |  |
+          | | Subscriber 1 | | Subscriber 2 | | Subscriber 3 |  |
+          | +-------^------+ +------^-------+ +------^-------+  |
+          |         |               |                |          |
+          +---------+---------------+----------------+----------+
+                    |               |                |
+                    |               |                |
+                    |               |                |
+                    |        +------+-------+        |
+                    +--------+    Relay     +--------+
+                    |        +------+-------+        |
+                    |               |                |
+                    |               |                |
+                    |               |                |
+          +---------+---------------+----------------+----------+
+          |         |               |                |          |
+          | +-------v------+ +------v-------+ +------v-------+  |
+          | | Publisher 1  | | Publisher 2  | | Publisher 3  |  |
+          | | Subscriber 1 | | Subscriber 2 | | Subscriber 3 |  |
+          | +--------------+ +--------------+ +--------------+  |
+          |                                                     |
+          | namespace = meeting, 5678                           |
+          +-----------------------------------------------------+
 
    The above diagram shows a set of publishers and subscribers.  Each
    client in this scenario publishes two tracks, audio and video, and
@@ -440,7 +454,7 @@ Table of Contents
 
    Clients will ignore the repeated start messages after receiving the
    first one.  The test begins on the first data message (Section 5.4.2)
-   received.  Start message MUST not be sent after sending the first
+   received.  Start message MUST NOT be sent after sending the first
    data message message.
 
 5.3.  Completion of benchmark
@@ -589,14 +603,7 @@ Table of Contents
    interpolated based on the test script to avoid multi-publisher and
    mirroring where the publisher subscribes to itself.
 
-6.  Security Considerations
-
-   This document defines a benchmarking methodology and does not
-   introduce new security vulnerabilities beyond those inherent in
-   [MOQT] and [QUIC].  However, the following security considerations
-   apply when implementing and running benchmarks:
-
-6.1.  Test Environment Isolation
+5.7.  Test Environment Isolation
 
    Benchmarking should be conducted in isolated test environments to
    prevent:
@@ -607,7 +614,7 @@ Table of Contents
 
    *  Resource exhaustion attacks on production systems
 
-6.2.  Authentication and Authorization
+5.8.  Authentication and Authorization
 
    Benchmark implementations SHOULD implement proper authentication and
    authorization mechanisms to:
@@ -618,7 +625,7 @@ Table of Contents
 
    *  Protect against malicious clients that could skew results
 
-6.3.  Resource Management
+5.9.  Resource Management
 
    Benchmark implementations MUST include safeguards to prevent:
 
@@ -629,7 +636,7 @@ Table of Contents
 
    *  CPU exhaustion from processing malformed benchmark messages
 
-6.4.  Data Privacy
+5.10.  Data Privacy
 
    While benchmark data is typically synthetic, implementations SHOULD:
 
@@ -639,13 +646,13 @@ Table of Contents
 
    *  Consider the privacy implications of detailed performance metrics
 
-6.5.  Implementation Security
+5.11.  Implementation Security
 
    Benchmark tools MUST follow secure coding practices and SHOULD
    undergo security review, as they may be deployed in sensitive network
    environments.
 
-7.  IANA Considerations
+6.  IANA Considerations
 
    This document does not require any IANA actions.  The benchmarking
    methodology defined herein:
@@ -664,6 +671,13 @@ Table of Contents
    The message type values defined in this document (0x01, 0x02, 0x03)
    are used solely within the context of benchmarking implementations
    and do not conflict with or extend the [MOQT] protocol message space.
+
+7.  Security Considerations
+
+   This document defines a benchmarking methodology and does not
+   introduce new security vulnerabilities beyond those inherent in
+   [MOQT] and [QUIC].  However, the following security considerations
+   apply when implementing and running benchmarks.
 
 8.  References
 
@@ -690,6 +704,136 @@ Table of Contents
               Multiplexed and Secure Transport", RFC 9000,
               DOI 10.17487/RFC9000, May 2021,
               <https://www.rfc-editor.org/rfc/rfc9000>.
+
+Appendix A.  Example Benchmark Results
+
+   Below are example results from running benchmark against existing
+   relays.
+
+A.1.  Environment
+
+   Each benchmark test was using the same set of EC2 instances in AWS.
+   The publisher and relay ran on a one EC2 instance while the clients
+   ran on one or more separate EC2 instances.
+
+   *  *EC2 Instance Type*: c8g.2xlarge (Graviton4 ARM processors
+      (2.7/2.8GHz), 8 cores, 16GB ram
+
+   *  *Networking*: UP to 15Gbps.  All instances on same VPC subnet and
+      no NAT gateway was used
+
+A.2.  Benchmark Tool
+
+   qperf (https://github.com/quicr/qperf) benchmark implementation was
+   used.
+
+A.3.  Relays
+
+   Benchmark tests two open source relays using latest main branches on
+   September 25th, 2025.
+
+   *  LAPS (https://github.com/quicr/laps)
+
+   *  Moxygen (https://github.com/facebookexperimental/moxygen)
+
+A.4.  Scenario 1: Single publisher audio
+
+A.4.1.  Config Profile
+
+   [Audio Datagram]
+   namespace           = perf/audio/{} ; MAY be the same across tracks,
+                                       ; entries delimited by /
+   name                = 1          ; SHOULD be unique to other tracks
+   track_mode          = datagram   ; (datagram|stream)
+   priority            = 2          ; (0-255)
+   ttl                 = 5000       ; TTL in ms
+   time_interval       = 20         ; transmit interval in floating
+                                    ; point ms
+   objects_per_group   = 1          ; number of objects per group >=1
+   first_object_size   = 120        ; size in bytes of the first object
+                                    ; in a group
+   object_size         = 120        ; size in bytes of remaining objects
+                                    ; in a group
+   start_delay         = 5000       ; start delay in ms - after control
+                                    ; messages are sent and acknowledged
+   total_transmit_time = 35000      ; total transmit time in ms,
+                                    ; including start delay
+
+A.4.2.  Results
+
+   +=========+=======================+================================+
+   | Relay   | Number of Subscribers | Notes                          |
+   +=========+=======================+================================+
+   | LAPS    | 2000                  | No dropped datagrams and CPU   |
+   |         |                       | was under 95% on a single core |
+   +---------+-----------------------+--------------------------------+
+   | Moxygen | 1000                  | No dropped datagrams and CPU   |
+   |         |                       | was under 95% on a single core |
+   +---------+-----------------------+--------------------------------+
+
+                    Table 4: Scenario 1 Relay Results
+
+A.5.  Scenario 2: Single publisher audio/video
+
+A.5.1.  Config Profile
+
+   [Audio Datagram]
+   namespace          = perf/audio/{}  ; MAY be the same across tracks,
+                                    ; entries delimited by /
+   name               = 1           ; SHOULD be unique to other tracks
+   track_mode         = datagram    ; (datagram|stream)
+   priority           = 2           ; (0-255)
+   ttl                = 5000        ; TTL in ms
+   time_interval      = 20          ; transmit interval in floating
+                                    ; point ms
+   objects_per_group  = 1           ; number of objects per group >=1
+   first_object_size  = 120         ; size in bytes of the first
+                                    ; object in group
+   object_size        = 120         ; size in bytes of remaining
+                                    ; objects in a group
+   start_delay        = 5000        ; start delay in ms - after control
+                                    ; messages are sent and acknowledged
+   total_transmit_time = 35000      ; total transmit time in ms
+
+   [360p Video]
+   namespace          = perf/video/{}  ; MAY be the same across tracks,
+                                       ; entries delimited by /
+   name               = 1          ; SHOULD be unique to other tracks
+   track_mode         = stream     ; (datagram|stream)
+   priority           = 3          ; (0-255)
+   ttl                = 5000       ; TTL in ms
+   time_interval      = 33.33      ; transmit interval in floating
+                                   ; point ms
+   objects_per_group  = 150        ; number of objects per group >=1
+   first_object_size  = 21333      ; size in bytes of the first object
+                                   ; in a group
+   object_size        = 2666       ; size in bytes of remaining objects
+                                   ; in a group
+   start_delay        = 5000       ; start delay in ms - after control
+                                   ; messages are sent and acknowledged
+   total_transmit_time = 35000     ; total transmit time in ms
+
+A.5.2.  Results
+
+      +=========+=============+=====================================+
+      | Relay   | Number of   | Notes                               |
+      |         | Subscribers |                                     |
+      +=========+=============+=====================================+
+      | LAPS    | 1000        | No dropped datagrams or stream      |
+      |         |             | data.  CPU was under 95% on a       |
+      |         |             | single core                         |
+      +---------+-------------+-------------------------------------+
+      | Moxygen | 250         | Datagrams started to get lost after |
+      |         |             | 250 and subscriptions started to    |
+      |         |             | close and fail after 250.  CPU on a |
+      |         |             | single core was less than 85%       |
+      +---------+-------------+-------------------------------------+
+
+                     Table 5: Scenario 2 Relay Results
+
+Acknowledgments
+
+   Thank you to Suhas Nandakumar for their reviews and suggestions.
 
 Authors' Addresses
 
