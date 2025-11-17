@@ -161,7 +161,7 @@ is used to benchmark a relay.
 Below describes common scenarios that the benchmark and configuration profiles need to support.
 Other scenarios can be defined as needed using the configuration profiles.
 
-## Single Publisher to Multiple Subscribers - Audio
+## Scenario 1: Single Publisher to Multiple Subscribers - Audio
 
 ~~~ aasvg
                    ┌──────────────┐
@@ -186,7 +186,7 @@ The above diagram shows a single publisher sending audio to multiple subscribers
 A single audio track is published using datagram. The audio track is sent at a constant interval that is then sent to all subscribers.  The benchmark is to see how many subscribers can be supported by the relay using datagram forwarding.
 
 
-## Single Publisher to Multiple Subscribers - Audio and Video
+## Scenario 2: Single Publisher to Multiple Subscribers - Audio and Video
 
 ~~~ aasvg
                    ┌──────────────┐
@@ -211,7 +211,7 @@ The above diagram shows a single publisher sending audio and video to multiple s
 Two tracks are published, an audio datagram track and a reliable stream track for video. The benchmark is to see how many subscribers can be supported by the relay using both datagram and
 stream forwarding tracks.
 
-## Groups of Publishers and Subscribers (aka Meeting)
+## Scenario 3: Groups of Publishers and Subscribers (aka Meeting)
 
 ~~~ aasvg
 
@@ -253,20 +253,20 @@ The above diagram shows a set of publishers and subscribers. Each client in this
 
 A configuration profile consists of per track configuration settings. The following track settings are defined:
 
-| Field | Notes |
-|:-------|:--------------------------------------|
-| namespace | Namespace tuple of the track |
-| name | Name of the track |
-| reliable | True to use QUIC streams and false to use datagrams |
-| mode | Is a value of 1 to indicate publisher, 2 to indicate subscriber, or 3 to indicate both. When both, the track namespace or name will often be interpolated based on the test script |
-| priority | Priority of the track |
-| ttl | Time to live for objects published |
-| interval | Interval in milliseconds to send data objects |
-| Objects Per Group | Number of objects within a group |
-| First Object Size | First object of group size in bytes |
-| Remaining Object Size | Remaining objects of group size in bytes |
-| Duration | Duration in milliseconds to send data objects |
-| Start Delay | Start delay in milliseconds |
+| Field                 | Notes                                                                                                                                                                              |
+| :-------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| namespace             | Namespace tuple of the track                                                                                                                                                       |
+| name                  | Name of the track                                                                                                                                                                  |
+| reliable              | True to use QUIC streams and false to use datagrams                                                                                                                                |
+| mode                  | Is a value of 1 to indicate publisher, 2 to indicate subscriber, or 3 to indicate both. When both, the track namespace or name will often be interpolated based on the test script |
+| priority              | Priority of the track                                                                                                                                                              |
+| ttl                   | Time to live for objects published                                                                                                                                                 |
+| interval              | Interval in milliseconds to send data objects                                                                                                                                      |
+| Objects Per Group     | Number of objects within a group                                                                                                                                                   |
+| First Object Size     | First object of group size in bytes                                                                                                                                                |
+| Remaining Object Size | Remaining objects of group size in bytes                                                                                                                                           |
+| Duration              | Duration in milliseconds to send data objects                                                                                                                                      |
+| Start Delay           | Start delay in milliseconds                                                                                                                                                        |
 {: title="Textual NodeId Formats" }
 
 Interpolation can be used to template the configuration profile.
@@ -440,3 +440,106 @@ This document does not require any IANA actions. The benchmarking methodology de
 - Defines message formats for benchmarking purposes only, which are not part of the {{MOQT}} protocol specification
 
 The message type values defined in this document (0x01, 0x02, 0x03) are used solely within the context of benchmarking implementations and do not conflict with or extend the {{MOQT}} protocol message space.
+
+# Security Considerations
+TODO Add security considerations.
+
+
+--- back
+
+# Example Benchmark Results
+
+Below are example results from running benchmark against existing relays.
+
+## Environment
+Each benchmark test was using the same set of EC2 instances in AWS.  The publisher
+and relay ran on a one EC2 instance while the clients ran on one or more separate
+EC2 instances.
+
+* **EC2 Instance Type**: c8g.2xlarge (Graviton4 ARM processors (2.7/2.8GHz), 8 cores, 16GB ram
+* **Networking**: UP to 15Gbps. All instances on same VPC subnet and no NAT gateway was used
+
+## Benchmark Tool
+
+[qperf](https://github.com/quicr/qperf) benchmark implementation was used.
+
+## Relays
+
+Benchmark tests two open source relays using latest main branches on September 25th, 2025.
+
+* [LAPS](https://github.com/quicr/laps)
+* [Moxygen](https://github.com/facebookexperimental/moxygen)
+
+## Scenario 1: Single publisher audio
+
+### Config Profile
+
+~~~
+[Audio]
+namespace             = perf/1         ; track namespace
+name                  = 1              ; track name
+track_mode            = datagram       ; track mode {datagram,stream}
+priority              = 2              ; priority (0-255)
+ttl                   = 5000           ; ttl in ms
+time_interval         = 20             ; transmit interval in floating point ms
+objs_per_group        = 1              ; objects per group count >=1
+bytes_per_group_start = 120            ; size of a group 0 object
+bytes_per_group       = 120            ; size of a group <> 0 object
+start_delay           = 5000           ; start delay in ms - after subscribes
+total_test_time       = 40000          ; total transmit time in ms - including start delay
+~~~
+
+### Results
+
+| Relay   | Number of Subscribers | Notes                                                       |
+| ------- | --------------------- | ----------------------------------------------------------- |
+| LAPS    | 2000                  | No dropped datagrams and CPU was under 95% on a single core |
+| Moxygen | 1000                  | No dropped datagrams and CPU was under 95% on a single core |
+{: title="Relay Results"}
+
+## Scenario 2: Single publisher audio/video
+
+### Config Profile
+
+~~~
+[Audio]
+namespace             = perf/1         ; track namespace
+name                  = 1              ; track name
+track_mode            = datagram         ; track mode {datagram,stream}
+priority              = 2              ; priority (0-255)
+ttl                   = 5000           ; ttl in ms
+time_interval         = 20             ; transmit interval in floating point ms
+objs_per_group        = 1              ; objects per group count >=1
+bytes_per_group_start = 120            ; size of a group 0 object
+bytes_per_group       = 120            ; size of a group <> 0 object
+start_delay           = 5000           ; start delay in ms - after subscribes
+total_test_time       = 40000          ; total transmit time in ms - including start delay
+
+[360p Video]
+namespace             = perf/2         ; track namespace
+name                  = 1              ; track name
+track_mode            = stream         ; track mode {datagram,stream}
+priority              = 3              ; priority (0-255)
+ttl                   = 5000           ; ttl in ms
+time_interval         = 33.33          ; transmit interval in floating point ms
+objs_per_group        = 150            ; objects per group count >=1
+bytes_per_group_start = 21333          ; size of a group 0 object
+bytes_per_group       = 2666           ; size of a group <> 0 object
+start_delay           = 5000           ; start delay in ms - after subscribes
+total_test_time       = 40000          ; total transmit time in ms - including start delay
+~~~
+
+### Results
+
+| Relay   | Number of Subscribers | Notes                                                                                                                                 |
+| ------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| LAPS    | 1000                  | No dropped datagrams or stream data. CPU was under 95% on a single core                                                               |
+| Moxygen | 250                   | Datagrams started to get lost after 250 and subscriptions started to close and fail after 250. CPU on a single core was less than 85% |
+{: title="Relay Results"}
+
+
+# Acknowledgments {#Acknowledgements}
+{: numbered="false"}
+
+
+Thank you to Suhas Nandakumar for their reviews and suggestions.
