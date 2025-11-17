@@ -39,7 +39,7 @@ author:
     name: Scott Henning
     email: scotthenning00@gmail.com
 
-contributor:
+# contributor:
 #- name: First Last
 #  org:  Cisco
 #  email:  email@cisco.com
