@@ -476,17 +476,17 @@ Benchmark tests two open source relays using latest main branches on September 2
 
 ~~~
 [Audio]
-namespace             = perf/1         ; track namespace
-name                  = 1              ; track name
-track_mode            = datagram       ; track mode {datagram,stream}
-priority              = 2              ; priority (0-255)
-ttl                   = 5000           ; ttl in ms
-time_interval         = 20             ; transmit interval in floating point ms
-objs_per_group        = 1              ; objects per group count >=1
-bytes_per_group_start = 120            ; size of a group 0 object
-bytes_per_group       = 120            ; size of a group <> 0 object
-start_delay           = 5000           ; start delay in ms - after subscribes
-total_test_time       = 40000          ; total transmit time in ms - including start delay
+namespace           = perf/audio/{} ; MAY be the same across tracks, entries delimited by /
+name                = 1             ; SHOULD be unique to other tracks
+track_mode          = datagram      ; (datagram|stream)
+priority            = 2             ; (0-255)
+ttl                 = 5000          ; TTL in ms
+time_interval       = 20            ; transmit interval in floating point ms
+objects_per_group   = 1             ; number of objects per group >=1
+first_object_size   = 120           ; size in bytes of the first object in a group
+object_size         = 120           ; size in bytes of remaining objects in a group
+start_delay         = 5000          ; start delay in ms - after control messages are sent and acknowledged
+total_transmit_time = 35000         ; total transmit time in ms - including start delay
 ~~~
 
 ### Results
@@ -503,30 +503,30 @@ total_test_time       = 40000          ; total transmit time in ms - including s
 
 ~~~
 [Audio]
-namespace             = perf/1         ; track namespace
-name                  = 1              ; track name
-track_mode            = datagram         ; track mode {datagram,stream}
-priority              = 2              ; priority (0-255)
-ttl                   = 5000           ; ttl in ms
-time_interval         = 20             ; transmit interval in floating point ms
-objs_per_group        = 1              ; objects per group count >=1
-bytes_per_group_start = 120            ; size of a group 0 object
-bytes_per_group       = 120            ; size of a group <> 0 object
-start_delay           = 5000           ; start delay in ms - after subscribes
-total_test_time       = 40000          ; total transmit time in ms - including start delay
+namespace          = perf/audio/{}  ; MAY be the same across tracks, entries delimited by /
+name               = 1              ; SHOULD be unique to other tracks
+track_mode         = datagram       ; (datagram|stream)
+priority           = 2              ; (0-255)
+ttl                = 5000           ; TTL in ms
+time_interval      = 20             ; transmit interval in floating point ms
+objects_per_group  = 1              ; number of objects per group >=1
+first_object_size  = 120            ; size in bytes of the first object in a group
+object_size        = 120            ; size in bytes of remaining objects in a group
+start_delay        = 5000           ; start delay in ms - after control messages are sent and acknowledged
+total_transmit_time = 35000          ; total transmit time in ms
 
 [360p Video]
-namespace             = perf/2         ; track namespace
-name                  = 1              ; track name
-track_mode            = stream         ; track mode {datagram,stream}
-priority              = 3              ; priority (0-255)
-ttl                   = 5000           ; ttl in ms
-time_interval         = 33.33          ; transmit interval in floating point ms
-objs_per_group        = 150            ; objects per group count >=1
-bytes_per_group_start = 21333          ; size of a group 0 object
-bytes_per_group       = 2666           ; size of a group <> 0 object
-start_delay           = 5000           ; start delay in ms - after subscribes
-total_test_time       = 40000          ; total transmit time in ms - including start delay
+namespace          = perf/video/{}  ; MAY be the same across tracks, entries delimited by /
+name               = 1              ; SHOULD be unique to other tracks
+track_mode         = stream         ; (datagram|stream)
+priority           = 3              ; (0-255)
+ttl                = 5000           ; TTL in ms
+time_interval      = 33.33          ; transmit interval in floating point ms
+objects_per_group  = 150            ; number of objects per group >=1
+first_object_size  = 21333          ; size in bytes of the first object in a group
+object_size        = 2666           ; size in bytes of remaining objects in a group
+start_delay        = 5000           ; start delay in ms - after control messages are sent and acknowledged
+total_transmit_time = 35000          ; total transmit time in ms
 ~~~
 
 ### Results
